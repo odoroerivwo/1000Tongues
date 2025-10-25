@@ -1,25 +1,19 @@
-import '../styles/globals.css';
-// import type { Metadata } from "next";
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
+import type { Metadata } from 'next';
+import './globals.css'; // Keep this - it's needed for Tailwind
 
-// export const metadata: Metadata = {
-//   title: "1000t Admin - Dashboard",
-//   description: "Admin dashboard",
-// };
+export const metadata: Metadata = {
+  title: 'AdminPro Dashboard',
+  description: 'Modern admin dashboard with enterprise-grade security',
+};
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <body>
-        <div className="min-h-screen flex bg-gray-50">
-          <Sidebar />
-          <div className="flex-1 flex flex-col">
-            <Header />
-            <main className="p-6">{children}</main>
-          </div>
-        </div>
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
