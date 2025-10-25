@@ -24,9 +24,15 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Public routes - redirect to dashboard if already authenticated
-  if (pathname === '/login') {
-    if (isAuthenticated) {
+  // Public routes - redirect to dashboard if already authenticated (except registration)
+  if (pathname === '/login' || pathname === '/register/choirmaster') {
+    // Allow public choirmaster registration without authentication
+    if (pathname === '/register/choirmaster') {
+      return NextResponse.next();
+    }
+    
+    // Redirect authenticated users away from login
+    if (pathname === '/login' && isAuthenticated) {
       console.log('Redirecting authenticated user from /login to /dashboard');
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
@@ -55,5 +61,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/dashboard/:path*', '/login'],
+  matcher: ['/', '/dashboard/:path*', '/login', '/register/choirmaster'],
 };
