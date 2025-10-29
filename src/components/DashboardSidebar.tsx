@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { LayoutDashboard, Users, Settings, BarChart3, LogOut, Shield } from "lucide-react";
+import { LayoutDashboard, Users, Settings, BarChart3, LogOut} from "lucide-react";
 import type { JWTPayload } from "@/lib/auth";
+import Image from 'next/image';
+
 
 export default function DashboardSidebar({ admin }: { admin: JWTPayload }) {
   const pathname = usePathname();
@@ -44,11 +46,19 @@ export default function DashboardSidebar({ admin }: { admin: JWTPayload }) {
     <aside className="w-64 bg-[#0D1B2A] text-gray-300 flex flex-col min-h-screen shadow-lg">
       {/* Logo Section */}
       <div className="p-6 text-center border-b border-gray-700">
-        <div className="w-20 h-20 mx-auto bg-gradient-to-br from-white to-gray-400 rounded-2xl shadow-2xl flex items-center justify-center">
-          <Shield className="w-10 h-10 text-[#0D1B2A]" />
-        </div>
-        <h2 className="mt-4 text-lg font-bold text-white">Admin Panel</h2>
-      </div>
+  <div className="w-20 h-20 mx-auto bg-gradient-to-br from-white to-gray-400 rounded-2xl shadow-2xl flex items-center justify-center overflow-hidden">
+    <Image
+      src="/1000 tonguessss 1.png"
+      alt="Admin Logo"
+      width={64}       // or adjust to your image’s actual size
+      height={64}
+      className="object-contain"
+      priority          // ensures it's loaded early for best LCP
+    />
+  </div>
+  {/* <h2 className="mt-4 text-lg font-bold text-white">Admin Panel</h2> */}
+</div>
+
 
       {/* User Info */}
       <div className="px-4 py-3 border-b border-gray-700">

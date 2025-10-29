@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css'; // Keep this - it's needed for Tailwind
 
 export const metadata: Metadata = {
-  title: 'AdminPro Dashboard',
-  description: 'Modern admin dashboard with enterprise-grade security',
+  title: '1000 Tongues || Admin',
+  description: '1000 Tongues Voices',
 };
 
 export default function RootLayout({
