@@ -34,7 +34,7 @@ interface ChoirRegistrationFormProps {
   submitButtonText?: string;
 }
 
-export default function ChoirmasterForm({
+export default function ChoirRegistrationForm({
   onSubmit,
   submitButtonText = "Submit Registration",
 }: ChoirRegistrationFormProps) {
@@ -67,17 +67,16 @@ export default function ChoirmasterForm({
     photographyConsent: false,
   });
 
-const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-  const { name, value, type } = e.target;
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target;
 
-  const newValue =
-    type === 'checkbox'
-      ? (e.target as HTMLInputElement).checked
-      : value;
+    const newValue =
+      type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
 
-  setFormData(prev => ({ ...prev, [name]: newValue }));
-};
-
+    setFormData((prev) => ({ ...prev, [name]: newValue }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,7 +86,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
 
     try {
       await onSubmit(formData);
-      setSuccess("🎶 Registration successful! We’ll be in touch soon.");
+      setSuccess("🎶 Registration successful! We'll be in touch soon.");
       setFormData({
         firstName: "",
         lastName: "",
@@ -120,7 +119,12 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
     }
   };
 
-  const textInput = (label: string, name: keyof ChoirRegistrationFormData, required = false, type = "text") => (
+  const textInput = (
+    label: string,
+    name: keyof ChoirRegistrationFormData,
+    required = false,
+    type = "text"
+  ) => (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-1">
         {label} {required && <span className="text-red-500">*</span>}
@@ -142,8 +146,16 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
         Choir Registration Form
       </h2>
 
-      {success && <div className="bg-green-50 text-green-800 border border-green-200 p-3 rounded-lg">{success}</div>}
-      {error && <div className="bg-red-50 text-red-800 border border-red-200 p-3 rounded-lg">{error}</div>}
+      {success && (
+        <div className="bg-green-50 text-green-800 border border-green-200 p-3 rounded-lg">
+          {success}
+        </div>
+      )}
+      {error && (
+        <div className="bg-red-50 text-red-800 border border-red-200 p-3 rounded-lg">
+          {error}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {textInput("First Name", "firstName", true)}
@@ -158,13 +170,24 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
         {textInput("Available Rehearsal Days", "availableRehearsalDays")}
         {textInput("Time Commitment", "timeCommitment")}
         {textInput("Emergency Contact Name", "emergencyContactName", true)}
-        {textInput("Emergency Contact Relationship", "emergencyContactRelationship", true)}
+        {textInput(
+          "Emergency Contact Relationship",
+          "emergencyContactRelationship",
+          true
+        )}
         {textInput("Emergency Contact Phone", "emergencyContactPhone", true)}
-        {textInput("Emergency Contact Email", "emergencyContactEmail", true, "email")}
+        {textInput(
+          "Emergency Contact Email",
+          "emergencyContactEmail",
+          true,
+          "email"
+        )}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Musical Experience</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Musical Experience
+        </label>
         <textarea
           name="musicalExperience"
           value={formData.musicalExperience}
@@ -175,7 +198,9 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Dietary Requirements</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Dietary Requirements
+        </label>
         <textarea
           name="dietaryRequirements"
           value={formData.dietaryRequirements}
@@ -193,18 +218,34 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
       {/* Consent Checkboxes */}
       <div className="space-y-3">
         {[
-          { name: "termsAccepted", label: "I agree to the Terms and Conditions." },
-          { name: "privacyPolicyAccepted", label: "I have read and accept the Privacy Policy." },
-          { name: "communicationConsent", label: "I consent to receive communications regarding choir updates." },
-          { name: "photographyConsent", label: "I consent to be photographed or recorded during choir activities." },
+          {
+            name: "termsAccepted",
+            label: "I agree to the Terms and Conditions.",
+          },
+          {
+            name: "privacyPolicyAccepted",
+            label: "I have read and accept the Privacy Policy.",
+          },
+          {
+            name: "communicationConsent",
+            label: "I consent to receive communications regarding choir updates.",
+          },
+          {
+            name: "photographyConsent",
+            label:
+              "I consent to be photographed or recorded during choir activities.",
+          },
         ].map((item) => (
           <label key={item.name} className="flex items-center space-x-2">
             <input
               type="checkbox"
               name={item.name}
-              checked={(formData as any)[item.name]}
+              checked={formData[item.name as keyof ChoirRegistrationFormData] as boolean}
               onChange={handleChange}
-              required={item.name === "termsAccepted" || item.name === "privacyPolicyAccepted"}
+              required={
+                item.name === "termsAccepted" ||
+                item.name === "privacyPolicyAccepted"
+              }
               className="w-4 h-4 text-[#B8860B] border-gray-300 rounded"
             />
             <span className="text-sm text-gray-700">{item.label}</span>
