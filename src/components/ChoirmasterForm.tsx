@@ -34,7 +34,7 @@ interface ChoirRegistrationFormProps {
   submitButtonText?: string;
 }
 
-export default function ChoirRegistrationForm({
+export default function ChoirmasterForm({
   onSubmit,
   submitButtonText = "Submit Registration",
 }: ChoirRegistrationFormProps) {
@@ -141,11 +141,7 @@ export default function ChoirRegistrationForm({
   );
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-2xl shadow-md">
-      <h2 className="text-2xl font-semibold text-center text-[#B8860B] mb-4">
-        Choir Registration Form
-      </h2>
-
+    <form onSubmit={handleSubmit} className="space-y-6">
       {success && (
         <div className="bg-green-50 text-green-800 border border-green-200 p-3 rounded-lg">
           {success}
