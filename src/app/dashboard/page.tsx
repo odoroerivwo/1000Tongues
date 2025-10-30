@@ -36,7 +36,7 @@ export default async function DashboardPage() {
           Welcome back, {admin?.email}!
         </h1>
         <p className="text-gray-600 mt-2">
-          Here's what's happening with your platform today.
+          Here&apos;s what&apos;s happening with your platform today.
         </p>
       </div>
 

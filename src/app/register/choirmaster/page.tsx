@@ -86,15 +86,14 @@ export default function PublicChoirmasterRegistration() {
               </p>
             </div>
 
-            <ChoirmasterForm
-              onSubmit={handleSubmit}
-              submitButtonText="Register Now"
-              isPublic={true}
-            />
+              <ChoirmasterForm
+                onSubmit={handleSubmit}
+                submitButtonText="Register Now"
+              />
 
             <div className="mt-6 pt-6 border-t border-gray-200">
               <p className="text-sm text-gray-600 text-center">
-                Your application will be reviewed by our admin team. You'll receive 
+                Your application will be reviewed by our admin team. You&apos;ll receive 
                 a notification once your registration is approved.
               </p>
             </div>
