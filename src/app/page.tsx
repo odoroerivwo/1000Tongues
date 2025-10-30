@@ -6,8 +6,15 @@ export default function LandingPage() {
   const [scrollY, setScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
 
+  // Split into two separate effects to avoid cascading renders
   useEffect(() => {
-    setIsVisible(true);
+    // Use requestAnimationFrame to defer state update
+    requestAnimationFrame(() => {
+      setIsVisible(true);
+    });
+  }, []);
+
+  useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -142,7 +149,7 @@ export default function LandingPage() {
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="text-center transition-all duration-500 delay-${index * 100}"
+                className="text-center transition-all duration-500"
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
