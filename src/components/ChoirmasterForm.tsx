@@ -4,9 +4,9 @@ import { useState } from "react";
 import { User, Mail, Phone, Music, Loader2 } from "lucide-react";
 
 interface ChoirmasterFormData {
-  name: string;
+  fullname: string;
   email: string;
-  phone: string;
+  phoneNumber: string;
   role: string;
 }
 
@@ -28,9 +28,9 @@ export default function ChoirmasterForm({
   const [success, setSuccess] = useState("");
 
   const [formData, setFormData] = useState<ChoirmasterFormData>({
-    name: initialData?.name || "",
+    fullname: initialData?.fullname || "",
     email: initialData?.email || "",
-    phone: initialData?.phone || "",
+    phoneNumber: initialData?.phoneNumber || "",
     role: initialData?.role || "",
   });
 
@@ -57,9 +57,9 @@ export default function ChoirmasterForm({
 
       if (isPublic) {
         setFormData({
-          name: "",
+          fullname: "",
           email: "",
-          phone: "",
+          phoneNumber: "",
           role: "",
         });
       }
@@ -74,21 +74,21 @@ export default function ChoirmasterForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Success Message */}
+      {/* ✅ Success Message */}
       {success && (
         <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
           {success}
         </div>
       )}
 
-      {/* Error Message */}
+      {/* ❌ Error Message */}
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
           {error}
         </div>
       )}
 
-      {/* Name Field */}
+      {/* ✅ Full Name */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Full Name <span className="text-red-500">*</span>
@@ -97,8 +97,8 @@ export default function ChoirmasterForm({
           <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="text"
-            name="name"
-            value={formData.name}
+            name="fullname"
+            value={formData.fullname}
             onChange={handleChange}
             required
             placeholder="John Doe"
@@ -107,7 +107,7 @@ export default function ChoirmasterForm({
         </div>
       </div>
 
-      {/* Email Field */}
+      {/* ✅ Email Address */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Email Address <span className="text-red-500">*</span>
@@ -126,7 +126,7 @@ export default function ChoirmasterForm({
         </div>
       </div>
 
-      {/* Phone Field */}
+      {/* ✅ Phone Number */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Phone Number <span className="text-red-500">*</span>
@@ -135,8 +135,8 @@ export default function ChoirmasterForm({
           <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="tel"
-            name="phone"
-            value={formData.phone}
+            name="phoneNumber"
+            value={formData.phoneNumber}
             onChange={handleChange}
             required
             placeholder="08123456789"
@@ -145,7 +145,7 @@ export default function ChoirmasterForm({
         </div>
       </div>
 
-      {/* Role Field */}
+      {/* ✅ Role */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Role <span className="text-red-500">*</span>
@@ -169,7 +169,7 @@ export default function ChoirmasterForm({
         </div>
       </div>
 
-      {/* Submit Button */}
+      {/* ✅ Submit Button */}
       <button
         type="submit"
         disabled={loading}

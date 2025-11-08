@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
-interface ChoristerRegistrationFormData {
+export interface ChoristerRegistrationFormData {
   firstName: string;
   lastName: string;
   email: string;
@@ -29,7 +29,9 @@ interface ChoristerRegistrationFormData {
   photographyConsent: boolean;
 }
 
-interface ChoristerRegistrationFormProps {
+interface ChoristerFormProps {
+  // chorister may be partial (editing) and may come from API with slightly different keys
+  chorister?: Partial<ChoristerRegistrationFormData> & Record<string, any>;
   onSubmit: (data: ChoristerRegistrationFormData) => Promise<void>;
   submitButtonText?: string;
 }
@@ -37,11 +39,9 @@ interface ChoristerRegistrationFormProps {
 export default function ChoristerForm({
   onSubmit,
   submitButtonText = "Submit Registration",
-}: ChoristerRegistrationFormProps) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [formData, setFormData] = useState<ChoristerRegistrationFormData>({
+  chorister,
+}: ChoristerFormProps) {
+  const initialState: ChoristerRegistrationFormData = {
     firstName: "",
     lastName: "",
     email: "",
@@ -65,7 +65,53 @@ export default function ChoristerForm({
     privacyPolicyAccepted: false,
     communicationConsent: false,
     photographyConsent: false,
-  });
+  };
+
+  const [formData, setFormData] = useState<ChoristerRegistrationFormData>(initialState);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  // Helper to map incoming partial chorister to full form shape.
+  const mapChoristerToForm = (c?: Partial<ChoristerRegistrationFormData> & Record<string, any>) => {
+    if (!c) return initialState;
+    return {
+      firstName: (c.firstName as string) ?? (c.fullname as string) ?? "",
+      lastName: (c.lastName as string) ?? "",
+      email: (c.email as string) ?? "",
+      // support both phoneNumber and phone from different APIs
+      phoneNumber: (c.phoneNumber as string) ?? (c.phone as string) ?? "",
+      churchName: (c.churchName as string) ?? "",
+      churchLocation: (c.churchLocation as string) ?? "",
+      pastorName: (c.pastorName as string) ?? "",
+      musicalExperience: (c.musicalExperience as string) ?? "",
+      voiceRange: (c.voiceRange as string) ?? "",
+      previousChoristerExperience: (c.previousChoristerExperience as string) ?? "",
+      availableRehearsalDays: (c.availableRehearsalDays as string) ?? "",
+      timeCommitment: (c.timeCommitment as string) ?? "",
+      dietaryRequirements: (c.dietaryRequirements as string) ?? "",
+      accessibilityNeeds: (c.accessibilityNeeds as string) ?? "",
+      travelArrangements: (c.travelArrangements as string) ?? "",
+      emergencyContactName: (c.emergencyContactName as string) ?? "",
+      emergencyContactRelationship: (c.emergencyContactRelationship as string) ?? "",
+      emergencyContactPhone: (c.emergencyContactPhone as string) ?? (c.emergencyPhone as string) ?? "",
+      emergencyContactEmail: (c.emergencyContactEmail as string) ?? "",
+      termsAccepted: typeof c.termsAccepted === "boolean" ? c.termsAccepted : false,
+      privacyPolicyAccepted: typeof c.privacyPolicyAccepted === "boolean" ? c.privacyPolicyAccepted : false,
+      communicationConsent: typeof c.communicationConsent === "boolean" ? c.communicationConsent : false,
+      photographyConsent: typeof c.photographyConsent === "boolean" ? c.photographyConsent : false,
+    } as ChoristerRegistrationFormData;
+  };
+
+  // Prefill form if chorister prop changes (editing)
+  useEffect(() => {
+    if (chorister) {
+      setFormData((prev) => ({ ...prev, ...mapChoristerToForm(chorister) }));
+    } else {
+      setFormData(initialState);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chorister]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -84,31 +130,10 @@ export default function ChoristerForm({
     try {
       await onSubmit(formData);
       setSuccess("🎶 Registration successful! We'll be in touch soon.");
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phoneNumber: "",
-        churchName: "",
-        churchLocation: "",
-        pastorName: "",
-        musicalExperience: "",
-        voiceRange: "",
-        previousChoristerExperience: "",
-        availableRehearsalDays: "",
-        timeCommitment: "",
-        dietaryRequirements: "",
-        accessibilityNeeds: "",
-        travelArrangements: "",
-        emergencyContactName: "",
-        emergencyContactRelationship: "",
-        emergencyContactPhone: "",
-        emergencyContactEmail: "",
-        termsAccepted: false,
-        privacyPolicyAccepted: false,
-        communicationConsent: false,
-        photographyConsent: false,
-      });
+      // Only reset when creating a new record (no chorister prop)
+      if (!chorister) {
+        setFormData(initialState);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -123,13 +148,11 @@ export default function ChoristerForm({
     type = "text"
   ) => (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label}
-      </label>
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
       <input
         type={type}
         name={name}
-        value={formData[name] as string}
+        value={formData[name] as unknown as string}
         onChange={handleChange}
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#B8860B] focus:border-transparent"
       />

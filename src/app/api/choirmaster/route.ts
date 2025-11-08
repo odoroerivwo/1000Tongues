@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { getAuthAdmin } from "@/lib/auth";
 
-// GET - fetch all choirmasters (admin-only)
+// ✅ Required fields for a choirmaster
+const requiredFields = ["fullname", "email", "phoneNumber", "role"];
+
+// ✅ GET — Fetch all choirmasters
 export async function GET(request: NextRequest) {
   try {
-    const admin = await getAuthAdmin();
-    if (!admin) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
     const client = await clientPromise;
     const db = client.db("1000t-admin");
 
@@ -20,64 +17,65 @@ export async function GET(request: NextRequest) {
       .toArray();
 
     return NextResponse.json({ choirmasters }, { status: 200 });
-  } catch (error) {
-    console.error("Error fetching choirmasters:", error);
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+  } catch (error: any) {
+    console.error("GET Error:", error);
+    return NextResponse.json(
+      { message: "Failed to fetch choirmasters", error: error.message },
+      { status: 500 }
+    );
   }
 }
 
-// POST - create a new choirmaster (supports public or admin-created)
+// ✅ POST — Create a new choirmaster
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { name, email, phone, role, isPublic } = body;
+    const data = await request.json();
+    const client = await clientPromise;
+    const db = client.db("1000t-admin");
 
-    // basic validation
-    if (!name || !email || !phone || !role) {
+    // ✅ Validate required fields
+    const missingFields = requiredFields.filter(
+      (field) => !data[field] || data[field].toString().trim() === ""
+    );
+
+    if (missingFields.length > 0) {
       return NextResponse.json(
-        { message: "Name, email, phone and role are required" },
+        { message: `The following fields are required: ${missingFields.join(", ")}` },
         { status: 400 }
       );
     }
 
-    // If not public registration, require admin
-    if (!isPublic) {
-      const admin = await getAuthAdmin();
-      if (!admin) {
-        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-      }
-    }
-
-    const client = await clientPromise;
-    const db = client.db("1000t-admin");
-
-    // Prevent duplicate email
-    const existing = await db.collection("choirmasters").findOne({ email });
+    // ✅ Check if choirmaster already exists by email
+    const existing = await db.collection("choirmasters").findOne({ email: data.email });
     if (existing) {
-      return NextResponse.json({ message: "Email already registered" }, { status: 409 });
+      return NextResponse.json(
+        { message: "A choirmaster with this email already exists" },
+        { status: 409 }
+      );
     }
 
+    // ✅ Prepare new choirmaster data
     const newChoirmaster = {
-      name,
-      email,
-      phone,
-      role,
+      fullname: data.fullname.trim(),
+      email: data.email.trim().toLowerCase(),
+      phoneNumber: data.phoneNumber.trim(),
+      role: data.role.trim(),
       status: "Pending",
       createdAt: new Date(),
       updatedAt: new Date(),
     };
 
-    const result = await db.collection("choirmasters").insertOne(newChoirmaster);
+    await db.collection("choirmasters").insertOne(newChoirmaster);
 
     return NextResponse.json(
-      {
-        message: "Choirmaster created successfully",
-        choirmaster: { ...newChoirmaster, _id: result.insertedId },
-      },
+      { message: "Choirmaster added successfully", choirmaster: newChoirmaster },
       { status: 201 }
     );
-  } catch (error) {
-    console.error("Error creating choirmaster:", error);
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+  } catch (error: any) {
+    console.error("POST Error:", error);
+    return NextResponse.json(
+      { message: "Failed to create choirmaster", error: error.message },
+      { status: 500 }
+    );
   }
 }
