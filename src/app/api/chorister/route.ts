@@ -1,0 +1,141 @@
+import { NextRequest, NextResponse } from "next/server";
+import clientPromise from "@/lib/mongodb";
+import { getAuthAdmin } from "@/lib/auth";
+
+// ✅ GET — Fetch all Choristers (Admin only)
+export async function GET() {
+  try {
+    const admin = await getAuthAdmin();
+    if (!admin) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const client = await clientPromise;
+    const db = client.db("1000t-admin");
+
+    const choristers = await db
+      .collection("choristers") // ✅ lowercase collection name
+      .find({})
+      .sort({ createdAt: -1 })
+      .toArray();
+
+    return NextResponse.json({ choristers }, { status: 200 });
+  } catch (error: any) {
+    console.error("❌ Error fetching choristers:", error);
+    return NextResponse.json(
+      {
+        message: "Internal server error",
+        error: error.message || "Unknown error",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// ✅ POST — Register new Chorister (Public)
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    console.log("📥 Received Chorister registration:", body);
+
+    const {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      churchName,
+      churchLocation,
+      pastorName,
+      musicalExperience,
+      voiceRange,
+      previousChoristerExperience,
+      availableRehearsalDays,
+      timeCommitment,
+      dietaryRequirements,
+      accessibilityNeeds,
+      travelArrangements,
+      emergencyContactName,
+      emergencyContactRelationship,
+      emergencyContactPhone,
+      emergencyContactEmail,
+      termsAccepted,
+      privacyPolicyAccepted,
+      communicationConsent,
+      photographyConsent,
+    } = body;
+
+    // ✅ Validate required fields
+    if (!firstName || !lastName || !email || !phoneNumber || !churchName) {
+      console.log("❌ Missing required fields");
+      return NextResponse.json(
+        { message: "Required fields missing" },
+        { status: 400 }
+      );
+    }
+
+    const client = await clientPromise;
+    const db = client.db("1000t-admin");
+
+    // ✅ Check if email already exists
+    const existing = await db.collection("choristers").findOne({ email });
+    if (existing) {
+      console.log("⚠️ Email already exists:", email);
+      return NextResponse.json(
+        { message: "Email already exists" },
+        { status: 409 }
+      );
+    }
+
+    // ✅ Build new Chorister document
+    const newChorister = {
+      fullName: `${firstName} ${lastName}`.trim(),
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      churchName,
+      churchLocation,
+      pastorName,
+      musicalExperience,
+      voiceRange,
+      previousChoristerExperience,
+      availableRehearsalDays,
+      timeCommitment,
+      dietaryRequirements,
+      accessibilityNeeds,
+      travelArrangements,
+      emergencyContactName,
+      emergencyContactRelationship,
+      emergencyContactPhone,
+      emergencyContactEmail,
+      termsAccepted: !!termsAccepted,
+      privacyPolicyAccepted: !!privacyPolicyAccepted,
+      communicationConsent: !!communicationConsent,
+      photographyConsent: !!photographyConsent,
+      status: "Pending",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    // ✅ Insert into MongoDB
+    const result = await db.collection("choristers").insertOne(newChorister);
+    console.log("✅ Chorister saved with ID:", result.insertedId);
+
+    return NextResponse.json(
+      {
+        message: "Chorister registration successful!",
+        chorister: { ...newChorister, _id: result.insertedId },
+      },
+      { status: 201 }
+    );
+  } catch (error: any) {
+    console.error("🔥 Error creating chorister:", error);
+    return NextResponse.json(
+      {
+        message: "Internal server error",
+        error: error.message || "Unknown error",
+      },
+      { status: 500 }
+    );
+  }
+}

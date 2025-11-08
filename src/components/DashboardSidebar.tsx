@@ -13,15 +13,15 @@ export default function DashboardSidebar({ admin }: { admin: JWTPayload }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const navItems = [
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/dashboard/choirmasters", label: "Choirmasters", icon: Users },
-    { href: "/dashboard/choristers", label: "Choristers", icon: Users },
-    { href: "/dashboard/volunteers", label: "Volunteers", icon: Users },
-    { href: "/dashboard/partnerships", label: "Partnerships", icon: BarChart3 },
-    { href: "/dashboard/schedule", label: "Schedule", icon: LayoutDashboard },
-    { href: "/dashboard/settings", label: "Settings", icon: Settings },
-  ];
+const navItems = [
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard/choristers", label: "Choristers", icon: Users },
+  { href: "/dashboard/choirmasters", label: "Choirmasters", icon: Users },
+  { href: "/dashboard/volunteers", label: "Volunteers", icon: Users },
+  { href: "/dashboard/partnerships", label: "Partnerships", icon: BarChart3 },
+  { href: "/dashboard/schedule", label: "Schedule", icon: LayoutDashboard },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
+];
 
   const handleLogout = async () => {
     try {
@@ -66,7 +66,7 @@ export default function DashboardSidebar({ admin }: { admin: JWTPayload }) {
           Logged in as
         </div>
         <div className="text-sm font-medium text-white truncate mt-1">
-          {admin.email}
+          Super Admin
         </div>
       </div>
 

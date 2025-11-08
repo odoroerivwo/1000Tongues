@@ -7,6 +7,7 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Server-side auth check
   const admin = await getAuthAdmin();
 
   if (!admin) {
@@ -15,11 +16,11 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen bg-gray-50">
+      {/* Your existing sidebar (client component) */}
       <DashboardSidebar admin={admin} />
+
       <main className="flex-1 p-8">
-        <div className="max-w-7xl mx-auto">
-          {children}
-        </div>
+        <div className="max-w-7xl mx-auto">{children}</div>
       </main>
     </div>
   );

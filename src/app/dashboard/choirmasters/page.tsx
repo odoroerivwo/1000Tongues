@@ -23,6 +23,29 @@ interface Choirmaster {
   createdAt: string;
 }
 
+// ✅ Simplified and fixed JSON handling
+async function apiRequest(url: string, options: RequestInit = {}) {
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+  });
+
+  // Parse safely without double-reading the body
+  let data: any;
+  const contentType = res.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    data = await res.json();
+  } else {
+    data = { message: await res.text() };
+  }
+
+  if (!res.ok) throw new Error(data.message || "Request failed");
+  return data;
+}
+
 export default function ChoirmastersPage() {
   const [choirmasters, setChoirmasters] = useState<Choirmaster[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,14 +53,14 @@ export default function ChoirmastersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  // Fetch choirmasters
+  // ✅ Fetch all choirmasters
   const fetchChoirmasters = async () => {
+    setLoading(true);
     try {
-      const res = await fetch("/api/choirmasters");
-      const data = await res.json();
-      setChoirmasters(data.choirmasters);
-    } catch (error) {
-      console.error("Error fetching choirmasters:", error);
+      const data = await apiRequest("/api/choirmaster");
+      setChoirmasters(data.choirmasters || []);
+    } catch (err) {
+      console.error("Error fetching choirmasters:", err);
     } finally {
       setLoading(false);
     }
@@ -47,72 +70,54 @@ export default function ChoirmastersPage() {
     fetchChoirmasters();
   }, []);
 
-  // Handle form submission
+  // ✅ Add new choirmaster
   const handleSubmit = async (formData: any) => {
-    const res = await fetch("/api/choirmasters", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message);
+    try {
+      const data = await apiRequest("/api/choirmaster", {
+        method: "POST",
+        body: JSON.stringify(formData),
+      });
+      alert(data.message || "Choirmaster saved successfully!");
+      await fetchChoirmasters();
+      setShowModal(false);
+    } catch (error: any) {
+      alert(error.message || "Failed to save choirmaster");
     }
-
-    await fetchChoirmasters();
-    setShowModal(false);
   };
 
-  // Update status
+  // ✅ Update status
   const updateStatus = async (id: string, status: string) => {
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/choirmasters/${id}`, {
+      const data = await apiRequest(`/api/choirmaster/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
-
-      if (res.ok) {
-        await fetchChoirmasters();
-      } else {
-        const error = await res.json();
-        alert(error.message || "Failed to update status");
-      }
-    } catch (error) {
-      console.error("Error updating status:", error);
-      alert("Failed to update status");
+      alert(data.message || "Status updated successfully");
+      await fetchChoirmasters();
+    } catch (error: any) {
+      alert(error.message || "Failed to update status");
     } finally {
       setActionLoading(null);
     }
   };
 
-  // Delete choirmaster
+  // ✅ Delete choirmaster
   const deleteChoirmaster = async (id: string) => {
     if (!confirm("Are you sure you want to delete this choirmaster?")) return;
-
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/choirmasters/${id}`, {
-        method: "DELETE",
-      });
-
-      if (res.ok) {
-        await fetchChoirmasters();
-      } else {
-        const error = await res.json();
-        alert(error.message || "Failed to delete choirmaster");
-      }
-    } catch (error) {
-      console.error("Error deleting choirmaster:", error);
-      alert("Failed to delete choirmaster");
+      const data = await apiRequest(`/api/choirmaster/${id}`, { method: "DELETE" });
+      alert(data.message || "Choirmaster deleted successfully");
+      await fetchChoirmasters();
+    } catch (error: any) {
+      alert(error.message || "Failed to delete choirmaster");
     } finally {
       setActionLoading(null);
     }
   };
 
-  // Filter choirmasters
+  // ✅ Filter search results
   const filteredChoirmasters = choirmasters.filter(
     (cm) =>
       cm.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -120,6 +125,7 @@ export default function ChoirmastersPage() {
       cm.role.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // ✅ Quick stats
   const stats = {
     total: choirmasters.length,
     accepted: choirmasters.filter((cm) => cm.status === "Accepted").length,
@@ -162,7 +168,7 @@ export default function ChoirmastersPage() {
         </div>
       </div>
 
-      {/* Search Bar */}
+      {/* Search bar */}
       <div className="mb-6">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -171,44 +177,36 @@ export default function ChoirmastersPage() {
             placeholder="Search choirmasters..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#B8860B] focus:border-transparent"
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#B8860B]"
           />
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-sm font-medium text-gray-600">
-            Total Choirmasters
-          </h3>
-          <p className="text-3xl font-bold text-gray-900 mt-2">{stats.total}</p>
-        </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-sm font-medium text-gray-600">Accepted</h3>
-          <p className="text-3xl font-bold text-green-600 mt-2">
-            {stats.accepted}
-          </p>
-        </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-sm font-medium text-gray-600">Pending</h3>
-          <p className="text-3xl font-bold text-yellow-600 mt-2">
-            {stats.pending}
-          </p>
-        </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-sm font-medium text-gray-600">Rejected</h3>
-          <p className="text-3xl font-bold text-red-600 mt-2">
-            {stats.rejected}
-          </p>
-        </div>
+        {[
+          { label: "Total Choirmasters", value: stats.total, color: "text-gray-900"},
+          { label: "Accepted", value: stats.accepted, color: "text-green-600" },
+          { label: "Pending", value: stats.pending, color: "text-yellow-600" },
+          { label: "Rejected", value: stats.rejected, color: "text-red-600" },
+        ].map((card, i) => (
+          <div
+            key={i}
+            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+          >
+            <h3 className="text-sm font-medium text-gray-600">{card.label}</h3>
+            <p className={`text-3xl font-bold mt-2 ${card.color || ""}`}>
+              {card.value}
+            </p>
+          </div>
+        ))}
       </div>
 
       {/* Table */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#B8860B]"></div>
+          <div className="flex justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#B8860B]" />
           </div>
         ) : filteredChoirmasters.length === 0 ? (
           <div className="text-center py-12">
@@ -220,116 +218,76 @@ export default function ChoirmastersPage() {
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Phone
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Registered
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
+                  {["Name", "Email", "Phone", "Role", "Status", "Registered", "Actions"].map(
+                    (head) => (
+                      <th
+                        key={head}
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        {head}
+                      </th>
+                    )
+                  )}
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-gray-200  text-gray-900 ">
                 {filteredChoirmasters.map((cm) => (
-                  <tr
-                    key={cm._id}
-                    className="hover:bg-gray-50 transition-colors duration-150"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
-                        {cm.name}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-600">{cm.email}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-600">{cm.phone}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-600">{cm.role}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                  <tr key={cm._id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 font-medium">{cm.name}</td>
+                    <td className="px-6 py-4">{cm.email}</td>
+                    <td className="px-6 py-4">{cm.phone}</td>
+                    <td className="px-6 py-4">{cm.role}</td>
+                    <td className="px-6 py-4">
                       <span
-                        className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
+                        className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full ${getStatusColor(
                           cm.status
                         )}`}
                       >
                         {cm.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-gray-600">
                       {new Date(cm.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex items-center gap-2">
+                    <td className="px-6 py-4">
+                      <div className="flex gap-2">
                         {actionLoading === cm._id ? (
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#B8860B]"></div>
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#B8860B]" />
                         ) : (
                           <>
                             {cm.status === "Pending" && (
                               <>
                                 <button
-                                  onClick={() =>
-                                    updateStatus(cm._id, "Accepted")
-                                  }
-                                  className="group relative p-2 text-green-600 hover:text-white hover:bg-green-600 rounded-lg transition-all duration-200 border border-green-200 hover:border-green-600 hover:shadow-md"
+                                  onClick={() => updateStatus(cm._id, "Accepted")}
+                                  className="p-2 text-green-600 hover:text-white hover:bg-green-600 rounded-lg"
                                   title="Accept"
                                 >
                                   <Check className="w-4 h-4" />
-                                  <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                                    Accept
-                                  </span>
                                 </button>
                                 <button
-                                  onClick={() =>
-                                    updateStatus(cm._id, "Rejected")
-                                  }
-                                  className="group relative p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg transition-all duration-200 border border-red-200 hover:border-red-600 hover:shadow-md"
+                                  onClick={() => updateStatus(cm._id, "Rejected")}
+                                  className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg"
                                   title="Reject"
                                 >
                                   <XCircle className="w-4 h-4" />
-                                  <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                                    Reject
-                                  </span>
                                 </button>
                               </>
                             )}
                             {cm.status !== "Pending" && (
                               <button
                                 onClick={() => updateStatus(cm._id, "Pending")}
-                                className="group relative p-2 text-yellow-600 hover:text-white hover:bg-yellow-600 rounded-lg transition-all duration-200 border border-yellow-200 hover:border-yellow-600 hover:shadow-md"
+                                className="p-2 text-yellow-600 hover:text-white hover:bg-yellow-600 rounded-lg"
                                 title="Reset to Pending"
                               >
                                 <RotateCcw className="w-4 h-4" />
-                                <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                                  Reset to Pending
-                                </span>
                               </button>
                             )}
                             <button
                               onClick={() => deleteChoirmaster(cm._id)}
-                              className="group relative p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg transition-all duration-200 border border-red-200 hover:border-red-600 hover:shadow-md"
+                              className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg"
                               title="Delete"
                             >
                               <Trash2 className="w-4 h-4" />
-                              <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                                Delete
-                              </span>
                             </button>
                           </>
                         )}
@@ -343,25 +301,19 @@ export default function ChoirmastersPage() {
         )}
       </div>
 
-      {/* Add Choirmaster Modal */}
+      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-fadeIn">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-xl">
-              <h2 className="text-xl font-bold text-gray-900">
-                Add New Choirmaster
-              </h2>
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            <div className="flex items-center justify-between border-b px-6 py-4">
+              <h2 className="text-xl font-bold">Add New Choirmaster</h2>
               <button
-                type="button"
                 onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg p-1 transition-all duration-200"
-                aria-label="Close modal"
-                title="Close"
+                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg p-1"
               >
-                <X className="w-6 h-6" aria-hidden="true" />
+                <X className="w-6 h-6" />
               </button>
             </div>
-
             <div className="p-6">
               <ChoirmasterForm
                 onSubmit={handleSubmit}
