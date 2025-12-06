@@ -7,6 +7,9 @@ import { LayoutDashboard, Users, Settings, BarChart3, LogOut} from "lucide-react
 import type { JWTPayload } from "@/lib/auth";
 import Image from 'next/image';
 
+// Define a type that includes the expected username field
+type AdminPayload = JWTPayload & { username?: string };
+
 export default function DashboardSidebar({ admin }: { admin?: JWTPayload }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -63,7 +66,8 @@ export default function DashboardSidebar({ admin }: { admin?: JWTPayload }) {
           Logged in as
         </div>
         <div className="text-sm font-medium text-white truncate mt-1">
-          {admin?.username || "Super Admin"}
+          {/* FIX: Cast admin to specific type to satisfy linter and TS */}
+          {(admin as AdminPayload)?.username || "Super Admin"}
         </div>
       </div>
 
