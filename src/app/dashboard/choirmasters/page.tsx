@@ -13,17 +13,12 @@ import {
 } from "lucide-react";
 import ChoirmasterForm from "@/components/ChoirmasterForm";
 
+// Loose interface to accept various database field naming conventions
 interface Choirmaster {
   _id: string;
-  name: string;
-  email: string;
-  phone: string;
-  role: string;
-  status: "Pending" | "Accepted" | "Rejected";
-  createdAt: string;
+  [key: string]: any; // Allow indexing for flexibility
 }
 
-// ✅ Simplified and fixed JSON handling
 async function apiRequest(url: string, options: RequestInit = {}) {
   const res = await fetch(url, {
     ...options,
@@ -33,7 +28,6 @@ async function apiRequest(url: string, options: RequestInit = {}) {
     },
   });
 
-  // Parse safely without double-reading the body
   let data: any;
   const contentType = res.headers.get("content-type");
   if (contentType && contentType.includes("application/json")) {
@@ -53,12 +47,12 @@ export default function ChoirmastersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  // ✅ Fetch all choirmasters
   const fetchChoirmasters = async () => {
     setLoading(true);
     try {
       const data = await apiRequest("/api/choirmaster");
-      setChoirmasters(data.choirmasters || []);
+      // Ensure we always have an array
+      setChoirmasters(Array.isArray(data.choirmasters) ? data.choirmasters : []);
     } catch (err) {
       console.error("Error fetching choirmasters:", err);
     } finally {
@@ -70,7 +64,6 @@ export default function ChoirmastersPage() {
     fetchChoirmasters();
   }, []);
 
-  // ✅ Add new choirmaster
   const handleSubmit = async (formData: any) => {
     try {
       const data = await apiRequest("/api/choirmaster", {
@@ -85,7 +78,6 @@ export default function ChoirmastersPage() {
     }
   };
 
-  // ✅ Update status
   const updateStatus = async (id: string, status: string) => {
     setActionLoading(id);
     try {
@@ -102,7 +94,6 @@ export default function ChoirmastersPage() {
     }
   };
 
-  // ✅ Delete choirmaster
   const deleteChoirmaster = async (id: string) => {
     if (!confirm("Are you sure you want to delete this choirmaster?")) return;
     setActionLoading(id);
@@ -117,15 +108,55 @@ export default function ChoirmastersPage() {
     }
   };
 
-  // ✅ Filter search results
-  const filteredChoirmasters = choirmasters.filter(
-    (cm) =>
-      cm.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      cm.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      cm.role.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // ✅ UPDATED: SUPER ROBUST FIELD CHECKERS
+  // Checks every possible variation of field names
+  const getName = (cm: Choirmaster) => {
+    if (!cm) return "N/A";
+    
+    const candidates = [
+      cm.name,
+      cm.Name,           // Case sensitive check
+      cm.fullName,
+      cm.fullname,       // Lowercase check
+      cm.contactName,    // Common in other forms
+      cm.userName,
+      cm.username,
+      cm.displayName,
+      // Check for first/last name combinations
+      (cm.firstName || cm.firstname) ? `${cm.firstName || cm.firstname} ${cm.lastName || cm.lastname || ""}` : null
+    ];
 
-  // ✅ Quick stats
+    // Find the first value that is a non-empty string
+    const found = candidates.find(val => typeof val === 'string' && val.trim().length > 0);
+    return found ? found.trim() : "N/A";
+  };
+
+  const getPhone = (cm: Choirmaster) => {
+    if (!cm) return "N/A";
+    const candidates = [
+      cm.phone,
+      cm.Phone,
+      cm.phoneNumber,
+      cm.phonenumber,
+      cm.mobile,
+      cm.contactPhone,
+      cm.tel
+    ];
+    const found = candidates.find(val => typeof val === 'string' && val.trim().length > 0);
+    return found ? found.trim() : "N/A";
+  };
+
+  const getEmail = (cm: Choirmaster) => cm.email || cm.emailAddress || "N/A";
+  const getRole = (cm: Choirmaster) => cm.role || "N/A";
+
+  const filteredChoirmasters = choirmasters.filter((cm) => {
+    const search = searchTerm.toLowerCase();
+    const name = getName(cm).toLowerCase();
+    const email = getEmail(cm).toLowerCase();
+    const role = getRole(cm).toLowerCase();
+    return name.includes(search) || email.includes(search) || role.includes(search);
+  });
+
   const stats = {
     total: choirmasters.length,
     accepted: choirmasters.filter((cm) => cm.status === "Accepted").length,
@@ -135,12 +166,9 @@ export default function ChoirmastersPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Accepted":
-        return "bg-green-100 text-green-800";
-      case "Rejected":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-yellow-100 text-yellow-800";
+      case "Accepted": return "bg-green-100 text-green-800";
+      case "Rejected": return "bg-red-100 text-red-800";
+      default: return "bg-yellow-100 text-yellow-800";
     }
   };
 
@@ -185,15 +213,12 @@ export default function ChoirmastersPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         {[
-          { label: "Total Choirmasters", value: stats.total, color: "text-gray-900"},
+          { label: "Total Choirmasters", value: stats.total, color: "text-gray-900" },
           { label: "Accepted", value: stats.accepted, color: "text-green-600" },
           { label: "Pending", value: stats.pending, color: "text-yellow-600" },
           { label: "Rejected", value: stats.rejected, color: "text-red-600" },
         ].map((card, i) => (
-          <div
-            key={i}
-            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
-          >
+          <div key={i} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h3 className="text-sm font-medium text-gray-600">{card.label}</h3>
             <p className={`text-3xl font-bold mt-2 ${card.color || ""}`}>
               {card.value}
@@ -220,29 +245,22 @@ export default function ChoirmastersPage() {
                 <tr>
                   {["Name", "Email", "Phone", "Role", "Status", "Registered", "Actions"].map(
                     (head) => (
-                      <th
-                        key={head}
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
+                      <th key={head} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         {head}
                       </th>
                     )
                   )}
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200  text-gray-900 ">
+              <tbody className="bg-white divide-y divide-gray-200 text-gray-900">
                 {filteredChoirmasters.map((cm) => (
                   <tr key={cm._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium">{cm.name}</td>
-                    <td className="px-6 py-4">{cm.email}</td>
-                    <td className="px-6 py-4">{cm.phone}</td>
-                    <td className="px-6 py-4">{cm.role}</td>
+                    <td className="px-6 py-4 font-medium">{getName(cm)}</td>
+                    <td className="px-6 py-4">{getEmail(cm)}</td>
+                    <td className="px-6 py-4">{getPhone(cm)}</td>
+                    <td className="px-6 py-4">{getRole(cm)}</td>
                     <td className="px-6 py-4">
-                      <span
-                        className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full ${getStatusColor(
-                          cm.status
-                        )}`}
-                      >
+                      <span className={`px-3 py-1 inline-flex text-xs font-semibold rounded-full ${getStatusColor(cm.status)}`}>
                         {cm.status}
                       </span>
                     </td>
@@ -257,36 +275,20 @@ export default function ChoirmastersPage() {
                           <>
                             {cm.status === "Pending" && (
                               <>
-                                <button
-                                  onClick={() => updateStatus(cm._id, "Accepted")}
-                                  className="p-2 text-green-600 hover:text-white hover:bg-green-600 rounded-lg"
-                                  title="Accept"
-                                >
+                                <button onClick={() => updateStatus(cm._id, "Accepted")} className="p-2 text-green-600 hover:text-white hover:bg-green-600 rounded-lg" title="Accept">
                                   <Check className="w-4 h-4" />
                                 </button>
-                                <button
-                                  onClick={() => updateStatus(cm._id, "Rejected")}
-                                  className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg"
-                                  title="Reject"
-                                >
+                                <button onClick={() => updateStatus(cm._id, "Rejected")} className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg" title="Reject">
                                   <XCircle className="w-4 h-4" />
                                 </button>
                               </>
                             )}
                             {cm.status !== "Pending" && (
-                              <button
-                                onClick={() => updateStatus(cm._id, "Pending")}
-                                className="p-2 text-yellow-600 hover:text-white hover:bg-yellow-600 rounded-lg"
-                                title="Reset to Pending"
-                              >
+                              <button onClick={() => updateStatus(cm._id, "Pending")} className="p-2 text-yellow-600 hover:text-white hover:bg-yellow-600 rounded-lg" title="Reset to Pending">
                                 <RotateCcw className="w-4 h-4" />
                               </button>
                             )}
-                            <button
-                              onClick={() => deleteChoirmaster(cm._id)}
-                              className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg"
-                              title="Delete"
-                            >
+                            <button onClick={() => deleteChoirmaster(cm._id)} className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg" title="Delete">
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </>
@@ -307,18 +309,12 @@ export default function ChoirmastersPage() {
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
             <div className="flex items-center justify-between border-b px-6 py-4">
               <h2 className="text-xl font-bold">Add New Choirmaster</h2>
-              <button
-                onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg p-1"
-              >
+              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg p-1">
                 <X className="w-6 h-6" />
               </button>
             </div>
             <div className="p-6">
-              <ChoirmasterForm
-                onSubmit={handleSubmit}
-                submitButtonText="Add Choirmaster"
-              />
+              <ChoirmasterForm onSubmit={handleSubmit} submitButtonText="Add Choirmaster" />
             </div>
           </div>
         </div>

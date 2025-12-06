@@ -18,7 +18,7 @@ export async function PATCH(
       );
     }
 
-    // Await params to get the id
+    // Fix: Await params in Next.js 15
     const { id } = await params;
 
     const body = await request.json();
@@ -27,13 +27,6 @@ export async function PATCH(
     if (!status) {
       return NextResponse.json(
         { message: 'Status is required' },
-        { status: 400 }
-      );
-    }
-
-    if (!['Active', 'Pending', 'Inactive'].includes(status)) {
-      return NextResponse.json(
-        { message: 'Invalid status value' },
         { status: 400 }
       );
     }
@@ -89,7 +82,7 @@ export async function DELETE(
       );
     }
 
-    // Await params to get the id
+    // Fix: Await params in Next.js 15
     const { id } = await params;
 
     const client = await clientPromise;

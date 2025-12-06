@@ -10,7 +10,7 @@ export async function PATCH(
 ) {
   try {
     const admin = await getAuthAdmin();
-    
+
     if (!admin) {
       return NextResponse.json(
         { message: 'Unauthorized' },
@@ -18,20 +18,19 @@ export async function PATCH(
       );
     }
 
-    // Await params to get the id
     const { id } = await params;
 
     const body = await request.json();
     const { status } = body;
 
-    if (!status) {
-      return NextResponse.json(
-        { message: 'Status is required' },
-        { status: 400 }
-      );
-    }
+    // if (!status) {
+    //   return NextResponse.json(
+    //     { message: 'Status is required' },
+    //     { status: 400 }
+    //   );
+    // }
 
-    if (!['Active', 'Inactive'].includes(status)) {
+    if (!['Active', 'Inactive', 'Pending'].includes(status)) {
       return NextResponse.json(
         { message: 'Invalid status value' },
         { status: 400 }
@@ -39,7 +38,7 @@ export async function PATCH(
     }
 
     const client = await clientPromise;
-    const db = client.db();
+    const db = client.db('1000t-admin');
 
     const result = await db
       .collection('volunteers')
@@ -49,7 +48,7 @@ export async function PATCH(
           $set: {
             status,
             updatedAt: new Date(),
-            updatedBy: admin.adminId,
+            updatedBy: (admin as any).username || 'Super Admin',
           },
         }
       );
@@ -81,7 +80,7 @@ export async function DELETE(
 ) {
   try {
     const admin = await getAuthAdmin();
-    
+
     if (!admin) {
       return NextResponse.json(
         { message: 'Unauthorized' },
@@ -89,11 +88,10 @@ export async function DELETE(
       );
     }
 
-    // Await params to get the id
     const { id } = await params;
 
     const client = await clientPromise;
-    const db = client.db();
+    const db = client.db('1000t-admin');
 
     const result = await db
       .collection('volunteers')

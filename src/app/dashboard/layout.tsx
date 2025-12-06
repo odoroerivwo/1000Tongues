@@ -16,10 +16,13 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Your existing sidebar (client component) */}
+      {/* Sidebar is fixed position with w-64 */}
       <DashboardSidebar admin={admin} />
 
-      <main className="flex-1 p-8">
+      {/* CRITICAL FIX: 'ml-64' creates a left margin equal to the sidebar's width,
+        preventing the content from hiding behind the sidebar.
+      */}
+      <main className="ml-64 flex-1 p-8 w-full">
         <div className="max-w-7xl mx-auto">{children}</div>
       </main>
     </div>

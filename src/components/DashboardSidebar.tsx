@@ -7,21 +7,20 @@ import { LayoutDashboard, Users, Settings, BarChart3, LogOut} from "lucide-react
 import type { JWTPayload } from "@/lib/auth";
 import Image from 'next/image';
 
-
-export default function DashboardSidebar({ admin }: { admin: JWTPayload }) {
+export default function DashboardSidebar({ admin }: { admin?: JWTPayload }) {
   const pathname = usePathname();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/dashboard/choristers", label: "Choristers", icon: Users },
-  { href: "/dashboard/choirmasters", label: "Choirmasters", icon: Users },
-  { href: "/dashboard/volunteers", label: "Volunteers", icon: Users },
-  { href: "/dashboard/partnerships", label: "Partnerships", icon: BarChart3 },
-  { href: "/dashboard/schedule", label: "Schedule", icon: LayoutDashboard },
-  { href: "/dashboard/settings", label: "Settings", icon: Settings },
-];
+  const navItems = [
+    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/dashboard/choristers", label: "Choristers", icon: Users },
+    { href: "/dashboard/choirmasters", label: "Choirmasters", icon: Users },
+    { href: "/dashboard/volunteers", label: "Volunteers", icon: Users },
+    { href: "/dashboard/partnerships", label: "Partnerships", icon: BarChart3 },
+    { href: "/dashboard/schedule", label: "Schedule", icon: LayoutDashboard },
+    { href: "/dashboard/settings", label: "Settings", icon: Settings },
+  ];
 
   const handleLogout = async () => {
     try {
@@ -43,22 +42,20 @@ const navItems = [
   };
 
   return (
-    <aside className="w-64 bg-[#0D1B2A] text-gray-300 flex flex-col min-h-screen shadow-lg">
+    <aside className="w-64 bg-[#0D1B2A] text-gray-300 flex flex-col min-h-screen shadow-lg fixed left-0 top-0 h-full z-10 overflow-y-auto">
       {/* Logo Section */}
       <div className="p-6 text-center border-b border-gray-700">
-  <div className="w-20 h-20 mx-auto bg-gradient-to-br from-white to-gray-400 rounded-2xl shadow-2xl flex items-center justify-center overflow-hidden">
-    <Image
-      src="/1000 tonguessss 1.png"
-      alt="Admin Logo"
-      width={64}       // or adjust to your image’s actual size
-      height={64}
-      className="object-contain"
-      priority          // ensures it's loaded early for best LCP
-    />
-  </div>
-  {/* <h2 className="mt-4 text-lg font-bold text-white">Admin Panel</h2> */}
-</div>
-
+        <div className="w-20 h-20 mx-auto bg-gradient-to-br from-white to-gray-400 rounded-2xl shadow-2xl flex items-center justify-center overflow-hidden">
+          <Image
+            src="/1000 tonguessss 1.png"
+            alt="Admin Logo"
+            width={64}
+            height={64}
+            className="object-contain"
+            priority
+          />
+        </div>
+      </div>
 
       {/* User Info */}
       <div className="px-4 py-3 border-b border-gray-700">
@@ -66,7 +63,7 @@ const navItems = [
           Logged in as
         </div>
         <div className="text-sm font-medium text-white truncate mt-1">
-          Super Admin
+          {admin?.username || "Super Admin"}
         </div>
       </div>
 

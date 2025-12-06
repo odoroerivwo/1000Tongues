@@ -1,8 +1,35 @@
 import Link from "next/link";
-import { Users, BarChart3, Settings } from "lucide-react";
+import { Users, BarChart3 } from "lucide-react";
 
-import clientPromise from "@/lib/mongodb";
-import { getAuthAdmin } from "@/lib/auth";
+// Use relative imports to ensure compatibility
+import clientPromise from "../../lib/mongodb";
+import { getAuthAdmin } from "../../lib/auth";
+
+// --- 1. Define Types to Fix 'Unexpected any' Errors ---
+interface BaseDoc {
+  _id: string;
+  createdAt?: string | Date;
+  submittedAt?: string | Date;
+}
+
+interface ChoirmasterDoc extends BaseDoc {
+  name?: string;
+}
+
+interface ChoristerDoc extends BaseDoc {
+  fullName?: string;
+  firstName?: string;
+  lastName?: string;
+}
+
+interface VolunteerDoc extends BaseDoc {
+  firstName?: string;
+  lastName?: string;
+}
+
+interface PartnerDoc extends BaseDoc {
+  organizationName?: string;
+}
 
 type ActivityItem = {
   type: string;
@@ -12,7 +39,6 @@ type ActivityItem = {
 };
 
 export default async function DashboardPage() {
-  // Ensure only admins can view dashboard
   const admin = await getAuthAdmin();
   if (!admin) {
     return (
@@ -24,9 +50,9 @@ export default async function DashboardPage() {
   }
 
   const client = await clientPromise;
-  const db = client.db();
+  const db = client.db("1000t-admin");
 
-  // Counts (fast)
+  // Counts
   const [
     totalChoirmasters,
     totalChoristers,
@@ -36,10 +62,10 @@ export default async function DashboardPage() {
     db.collection("choirmasters").countDocuments(),
     db.collection("choristers").countDocuments(),
     db.collection("volunteers").countDocuments(),
-    db.collection("partners").countDocuments(),
+    db.collection("partnerships").countDocuments(),
   ]);
 
-  // Fetch recent items from each collection (limit 3 each)
+  // Fetch recent items
   const [
     rawChoirmasters,
     rawChoristers,
@@ -48,68 +74,68 @@ export default async function DashboardPage() {
   ] = await Promise.all([
     db
       .collection("choirmasters")
-      .find({}, { projection: { name: 1, createdAt: 1 } })
-      .sort({ createdAt: -1 })
+      .find({}, { projection: { name: 1, createdAt: 1, submittedAt: 1 } })
+      .sort({ submittedAt: -1, createdAt: -1 })
       .limit(3)
       .toArray(),
     db
       .collection("choristers")
-      .find({}, { projection: { fullName: 1, firstName: 1, lastName: 1, createdAt: 1 } })
-      .sort({ createdAt: -1 })
+      .find({}, { projection: { fullName: 1, firstName: 1, lastName: 1, createdAt: 1, submittedAt: 1 } })
+      .sort({ submittedAt: -1, createdAt: -1 })
       .limit(3)
       .toArray(),
     db
       .collection("volunteers")
-      .find({}, { projection: { name: 1, createdAt: 1 } })
-      .sort({ createdAt: -1 })
+      .find({}, { projection: { firstName: 1, lastName: 1, submittedAt: 1 } })
+      .sort({ submittedAt: -1 })
       .limit(3)
       .toArray(),
     db
-      .collection("partners")
-      .find({}, { projection: { name: 1, createdAt: 1 } })
-      .sort({ createdAt: -1 })
+      .collection("partnerships")
+      .find({}, { projection: { organizationName: 1, submittedAt: 1 } })
+      .sort({ submittedAt: -1 })
       .limit(3)
       .toArray(),
   ]);
 
-  // Normalize into a single array and sort by createdAt desc
+  // --- 2. Use Typed Maps to Generate Activity Items ---
+  // We cast the raw arrays to our defined types to satisfy TypeScript
   const activities: ActivityItem[] = [
-    ...rawChoirmasters.map((r: any) => ({
+    ...(rawChoirmasters as unknown as ChoirmasterDoc[]).map((r) => ({
       type: "Choirmaster",
       name: r.name || "Unnamed",
-      createdAt: r.createdAt,
+      createdAt: r.submittedAt || r.createdAt || new Date(),
       href: "/dashboard/choirmasters",
     })),
-    ...rawChoristers.map((r: any) => ({
+    ...(rawChoristers as unknown as ChoristerDoc[]).map((r) => ({
       type: "Chorister",
-      // Prefer fullName; fall back to firstName + lastName; final fallback "Unnamed"
       name:
         (r.fullName && String(r.fullName).trim()) ||
         (`${r.firstName ?? ""} ${r.lastName ?? ""}`.trim()) ||
         "Unnamed",
-      createdAt: r.createdAt,
+      createdAt: r.submittedAt || r.createdAt || new Date(),
       href: "/dashboard/choristers",
     })),
-    ...rawVolunteers.map((r: any) => ({
+    ...(rawVolunteers as unknown as VolunteerDoc[]).map((r) => ({
       type: "Volunteer",
-      name: r.name || "Unnamed",
-      createdAt: r.createdAt,
+      name: `${r.firstName ?? ""} ${r.lastName ?? ""}`.trim() || "Unnamed",
+      createdAt: r.submittedAt || r.createdAt || new Date(),
       href: "/dashboard/volunteers",
     })),
-    ...rawPartners.map((r: any) => ({
+    ...(rawPartners as unknown as PartnerDoc[]).map((r) => ({
       type: "Partner",
-      name: r.name || "Unnamed",
-      createdAt: r.createdAt,
-      href: "/dashboard/partners",
+      name: r.organizationName || "Unnamed Organization",
+      createdAt: r.submittedAt || r.createdAt || new Date(),
+      href: "/dashboard/partnerships",
     })),
   ]
     .filter(Boolean)
     .sort((a, b) => {
-      const ta = new Date(a.createdAt).getTime();
-      const tb = new Date(b.createdAt).getTime();
-      return tb - ta;
+      const dateA = a.createdAt instanceof Date ? a.createdAt : new Date(a.createdAt);
+      const dateB = b.createdAt instanceof Date ? b.createdAt : new Date(b.createdAt);
+      return dateB.getTime() - dateA.getTime();
     })
-    .slice(0, 6); // show top 6 recent items
+    .slice(0, 6);
 
   const cards = [
     {
@@ -136,30 +162,30 @@ export default async function DashboardPage() {
     {
       title: "Total Partners",
       description: `${totalPartners}`,
-      icon: Users,
-      href: "/dashboard/partners",
+      icon: BarChart3,
+      href: "/dashboard/partnerships",
       color: "bg-yellow-500",
     },
   ];
 
   return (
-    <div className="p-8">
+    <div>
       <h1 className="text-4xl font-bold text-gray-900">Welcome back, Super Admin</h1>
-      <p className="text-gray-600">Here&apos;s what&apos;s happening with your platform today..</p>
-      <br /> <br />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <p className="text-gray-600 mt-2">Here&apos;s what&apos;s happening with your platform today..</p>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
         {cards.map((card, index) => (
           <Link key={index} href={card.href}>
-            <div className="p-6 rounded-xl shadow-md bg-white hover:shadow-lg transition cursor-pointer flex items-center gap-4">
+            <div className="p-6 rounded-xl shadow-md bg-white hover:shadow-lg transition cursor-pointer flex items-center gap-4 border border-gray-100">
               <div className={`p-4 rounded-lg text-white ${card.color}`}>
                 <card.icon size={28} />
               </div>
 
               <div>
-                <h3 className="text-md font-semibold text-gray-900 mb-2">
+                <h3 className="text-sm font-medium text-gray-500 mb-1">
                   {card.title}
                 </h3>
-                <p className="text-4xl font-bold text-gray-900 mb-2">
+                <p className="text-3xl font-bold text-gray-900">
                   {card.description}
                 </p>
               </div>
@@ -169,32 +195,37 @@ export default async function DashboardPage() {
       </div>
 
       <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h2 className="text-3xl font-semibold text-gray-900 mb-4">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-6">
           Recent Activity
         </h2>
 
         {activities.length === 0 ? (
           <p className="text-gray-600">No recent activity to display.</p>
         ) : (
-          <ul className="space-y-3">
+          <div className="space-y-4">
             {activities.map((a, i) => (
-              <li
+              <div
                 key={i}
-                className="flex items-start justify-between gap-4 p-3 rounded-md hover:bg-gray-50"
+                className="flex items-center justify-between p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition border border-gray-100"
               >
                 <div>
-                  <div className="text-sm text-gray-600">{a.type}</div>
-                  <div className="text-md font-medium text-gray-900">
+                  <div className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                    {a.type}
+                  </div>
+                  <div className="text-base font-medium text-gray-900">
                     {a.name}
                   </div>
                 </div>
 
-                <div className="text-sm text-gray-500">
-                  {new Date(a.createdAt).toLocaleString()}
+                <div className="text-sm text-gray-500 font-medium">
+                  {new Date(a.createdAt).toLocaleString(undefined, {
+                    dateStyle: 'medium',
+                    timeStyle: 'short'
+                  })}
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>

@@ -37,15 +37,21 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, phone, organization, isPublic } = body;
+    // Destructure all expected fields from the form
+    const { 
+      organizationName, 
+      organizationType, 
+      contactName, 
+      emailAddress, 
+      phoneNumber, 
+      partnershipLevel, 
+      specificInterests, 
+      message, 
+      isPublic 
+    } = body;
 
-    // Validation
-    if (!name || !email || !phone || !organization) {
-      return NextResponse.json(
-        { message: 'All fields are required' },
-        { status: 400 }
-      );
-    }
+    // REMOVED: Strict validation checks. 
+    // We allow submission even if some fields are empty as requested.
 
     // If not public registration, check for admin authentication
     if (!isPublic) {
@@ -61,25 +67,33 @@ export async function POST(request: NextRequest) {
     const client = await clientPromise;
     const db = client.db();
 
-    // Check if email already exists
-    const existingPartnership = await db
-      .collection('partnerships')
-      .findOne({ email });
+    // Check if email already exists (only if email is provided)
+    if (emailAddress) {
+      const existingPartnership = await db
+        .collection('partnerships')
+        .findOne({ emailAddress });
 
-    if (existingPartnership) {
-      return NextResponse.json(
-        { message: 'Email already registered' },
-        { status: 409 }
-      );
+      if (existingPartnership) {
+        return NextResponse.json(
+          { message: 'This email is already registered with a partnership.' },
+          { status: 409 }
+        );
+      }
     }
 
-    // Create partnership
+    // Create partnership object
+    // Mapping form fields directly to DB fields
     const newPartnership = {
-      name,
-      email,
-      phone,
-      organization,
-      status: 'Pending', // Default status for new registrations
+      organizationName,
+      organizationType,
+      contactName,
+      emailAddress,
+      phoneNumber,
+      partnershipLevel,
+      specificInterests,
+      message,
+      // Metadata
+      status: 'Pending',
       createdAt: new Date(),
       updatedAt: new Date(),
     };
