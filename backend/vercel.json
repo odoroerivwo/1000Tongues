@@ -1,4 +1,11 @@
 {
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.ts",
+      "use": "@vercel/node"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -13,7 +20,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/dist/server.js"
+      "destination": "/server.ts"
     }
   ]
 }
