@@ -2,286 +2,132 @@ import React from 'react';
 
 const PartnershipLevels: React.FC = () => {
   return (
-    <section className="py-16 px-8 bg-white">
+    <section className="py-16 px-4 sm:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
+        
         {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-5xl font-medium text-gray-900 mb-4">Partnership Levels</h2>
-          <p className=" text-lg font-bold">
-            Choose the partnership level that aligns with your <br /> organization's goals and capacity.
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-medium text-gray-900 mb-4">Partnership Options</h2>
+          <p className="text-lg font-medium text-gray-600 max-w-2xl mx-auto">
+            Choose the giving mode that best aligns with your capacity to support the 1000 Tongues vision.
           </p>
         </div>
 
-        {/* Partnership Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-           {/* Presenting Partner - Yellow */}
-           <div style={{ backgroundColor: '#FFD100' }} className="rounded p-6 text-black relative">
-            <div className="mb-4">
-              <h3 className="text-lg font-bold mb-2">Presenting Partner</h3>
-              <p className="text-sm mb-4">
-                Major corporations, foundations, or organizations
+        {/* --- 3-Column Grid Layout --- */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
+          
+          {/* Card 1: One-Time Giving */}
+          <div className="bg-white border border-gray-200 rounded-3xl p-8 text-gray-900 relative flex flex-col h-full shadow-sm hover:shadow-md transition-shadow">
+            <div className="mb-8">
+              <h3 className="text-2xl font-bold mb-3">One-Time Giving</h3>
+              <p className="text-sm text-gray-500 leading-relaxed">
+                Make a single, impactful contribution to support the immediate needs of the project.
               </p>
-              <div className="text-4xl font-bold mb-6">$25,000+</div>
             </div>
-
-            <div className="space-y-3">
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-yellow-400 text-xs">✓</span>
+            
+            <div className="space-y-4 flex-grow">
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 bg-gray-100 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5">
+                  <span className="text-[#0E1745] text-xs font-bold">✓</span>
                 </div>
-                <span className="text-sm">Event naming rights (1000 Tongues presented by [Company])</span>
+                <span className="text-sm text-gray-700">Support immediate event logistics and staging</span>
               </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-yellow-400 text-xs">✓</span>
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 bg-gray-100 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5">
+                  <span className="text-[#0E1745] text-xs font-bold">✓</span>
                 </div>
-                <span className="text-sm">Logo prominently featured on all marketing materials</span>
+                <span className="text-sm text-gray-700">Receive a one-time tax-deductible receipt</span>
               </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-yellow-400 text-xs">✓</span>
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 bg-gray-100 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5">
+                  <span className="text-[#0E1745] text-xs font-bold">✓</span>
                 </div>
-                <span className="text-sm">VIP hospitality hosting opportunity</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-yellow-400 text-xs">✓</span>
-                </div>
-                <span className="text-sm">50 VIP tickets included</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-yellow-400 text-xs">✓</span>
-                </div>
-                <span className="text-sm">Backstage access and meet & greet</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-yellow-400 text-xs">✓</span>
-                </div>
-                <span className="text-sm">Custom partnership activation opportunities</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-yellow-400 text-xs">✓</span>
-                </div>
-                <span className="text-sm">Year-long promotional partnership</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-yellow-400 text-xs">✓</span>
-                </div>
-                <span className="text-sm">Professional video testimonial opportunity</span>
+                <span className="text-sm text-gray-700">Name recognition in our post-event communications</span>
               </div>
             </div>
           </div>
 
-           {/* Principal Partner - Dark Blue */}
-           <div style={{ backgroundColor: '#0E1745' }} className="rounded p-6 text-white relative">
-            <div className="mb-4">
-              <h3 className="text-lg font-bold mb-2">Principal Partner</h3>
-              <p className="text-sm mb-4">
-                Regional businesses, large churches, organizations
-              </p>
-              <div className="text-4xl font-bold mb-6">$15,000</div>
+          {/* Card 2: Regular Giving (Highlighted Center) */}
+          <div style={{ backgroundColor: '#0E1745' }} className="rounded-3xl p-8 text-white relative flex flex-col h-full shadow-xl md:-translate-y-4 transition-transform">
+            {/* Optional "Recommended" Badge */}
+            <div className="absolute top-0 right-8 transform -translate-y-1/2">
+              <span className="bg-[#FFD100] text-[#0E1745] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                Most Impactful
+              </span>
             </div>
 
-            <div className="space-y-3">
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-blue-900 text-xs">✓</span>
-                </div>
-                <span className="text-sm">Prime logo placement on event materials</span>
-              </div>
+            <div className="mb-8 mt-2">
+              <h3 className="text-2xl font-bold mb-3">Regular Giving</h3>
+              <p className="text-sm text-blue-200 leading-relaxed">
+                Partner with us on a recurring basis to sustain the movement and future initiatives.
+              </p>
+            </div>
 
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-blue-900 text-xs">✓</span>
+            <div className="space-y-4 flex-grow">
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 bg-[#FFD100] rounded-full flex-shrink-0 flex items-center justify-center mt-0.5">
+                  <span className="text-[#0E1745] text-xs font-bold">✓</span>
                 </div>
-                <span className="text-sm">25 premium tickets included</span>
+                <span className="text-sm text-white">Provide crucial ongoing support for the ministry</span>
               </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-blue-900 text-xs">✓</span>
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 bg-[#FFD100] rounded-full flex-shrink-0 flex items-center justify-center mt-0.5">
+                  <span className="text-[#0E1745] text-xs font-bold">✓</span>
                 </div>
-                <span className="text-sm">Branded merchandise inclusion</span>
+                <span className="text-sm text-white">Exclusive access to partner-only updates</span>
               </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-blue-900 text-xs">✓</span>
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 bg-[#FFD100] rounded-full flex-shrink-0 flex items-center justify-center mt-0.5">
+                  <span className="text-[#0E1745] text-xs font-bold">✓</span>
                 </div>
-                <span className="text-sm">Social media partnership feature</span>
+                <span className="text-sm text-white">Consolidated annual giving statement</span>
               </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-blue-900 text-xs">✓</span>
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 bg-[#FFD100] rounded-full flex-shrink-0 flex items-center justify-center mt-0.5">
+                  <span className="text-[#0E1745] text-xs font-bold">✓</span>
                 </div>
-                <span className="text-sm">Private reception invitation</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-blue-900 text-xs">✓</span>
-                </div>
-                <span className="text-sm">Choir warm-up session access</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-blue-900 text-xs">✓</span>
-                </div>
-                <span className="text-sm">Digital content collaboration</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-blue-900 text-xs">✓</span>
-                </div>
-                <span className="text-sm">Post-event highlights package</span>
+                <span className="text-sm text-white">Priority seating consideration for future events</span>
               </div>
             </div>
           </div>
 
-           {/* Principal Partner - Black */}
-           <div style={{ backgroundColor: '#000000' }} className="rounded p-6 text-white relative">
-            <div className="mb-4">
-              <h3 className="text-lg font-bold mb-2">Principal Partner</h3>
-              <p className="text-sm mb-4">
-                Local businesses, mid-size churches, community groups
+          {/* Card 3: Custom / Advertising */}
+          <div style={{ backgroundColor: '#FFD100' }} className="rounded-3xl p-8 text-[#0E1745] relative flex flex-col h-full shadow-sm hover:shadow-md transition-shadow">
+            <div className="mb-8">
+              <h3 className="text-2xl font-bold mb-3">Custom & Brand</h3>
+              <p className="text-sm text-[#0E1745]/80 leading-relaxed">
+                Tailored brand placement, advertising, and unique corporate sponsorship opportunities.
               </p>
-              <div className="text-4xl font-bold mb-6">$10,000</div>
             </div>
 
-            <div className="space-y-3">
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
+            <div className="space-y-4 flex-grow">
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 bg-white rounded-full flex-shrink-0 flex items-center justify-center mt-0.5">
+                  <span className="text-[#FFD100] text-xs font-bold">✓</span>
                 </div>
-                <span className="text-sm">Prime logo placement on event materials</span>
+                <span className="text-sm font-medium">Digital and print brochure ad placements</span>
               </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 bg-white rounded-full flex-shrink-0 flex items-center justify-center mt-0.5">
+                  <span className="text-[#FFD100] text-xs font-bold">✓</span>
                 </div>
-                <span className="text-sm">20 premium tickets included</span>
+                <span className="text-sm font-medium">Brand alignment with positive community impact</span>
               </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 bg-white rounded-full flex-shrink-0 flex items-center justify-center mt-0.5">
+                  <span className="text-[#FFD100] text-xs font-bold">✓</span>
                 </div>
-                <span className="text-sm">Branded merchandise inclusion</span>
+                <span className="text-sm font-medium">Custom promotional campaigns</span>
               </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 bg-white rounded-full flex-shrink-0 flex items-center justify-center mt-0.5">
+                  <span className="text-[#FFD100] text-xs font-bold">✓</span>
                 </div>
-                <span className="text-sm">Social media partnership feature</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
-                </div>
-                <span className="text-sm">Digital programme ad placement</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
-                </div>
-                <span className="text-sm">Access to partnership updates</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
-                </div>
-                <span className="text-sm">Tax-deductible receipt provided</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
-                </div>
-                <span className="text-sm">Thank you feature in post-event communications</span>
+                <span className="text-sm font-medium">VIP hospitality hosting opportunities</span>
               </div>
             </div>
           </div>
 
-           {/* Community Partner - White */}
-           <div style={{ backgroundColor: '#FFFFFF' }} className="rounded p-6 text-gray-900 relative border border-gray-200">
-            <div className="mb-4">
-              <h3 className="text-lg font-bold mb-2">Community Partner</h3>
-              <p className="text-sm mb-4">
-                Small businesses, churches, individual supporters
-              </p>
-              <div className="text-4xl font-bold mb-6">$5,000</div>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
-                </div>
-                <span className="text-sm">Name recognition in event materials</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
-                </div>
-                <span className="text-sm">4 general admission tickets included</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
-                </div>
-                <span className="text-sm">Social media thank you post</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
-                </div>
-                <span className="text-sm">Access to partner-only updates</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
-                </div>
-                <span className="text-sm">Digital certificate of partnership</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
-                </div>
-                <span className="text-sm">Invitation to partner appreciation event</span>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-black text-xs">✓</span>
-                </div>
-                <span className="text-sm">Opportunity for volunteer team involvement</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>

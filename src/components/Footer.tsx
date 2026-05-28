@@ -68,11 +68,11 @@ const Footer: React.FC = () => {
                   Join the Choir
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link to="/tickets" className="hover:text-yellow-400 transition-colors">
                   Get Tickets
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link to="/partnership" className="hover:text-yellow-400 transition-colors">
                   Partnerships

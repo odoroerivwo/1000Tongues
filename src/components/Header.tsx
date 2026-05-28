@@ -126,22 +126,22 @@ const Header: React.FC = () => {
           <nav className="flex-1 overflow-y-auto py-4 px-2">
             <Link to="/home" className={getMobileNavLinkClass('/home')} onClick={closeMobileMenu}>Home</Link>
             <Link to="/join-choir" className={getMobileNavLinkClass('/join-choir')} onClick={closeMobileMenu}>Join Choir</Link>
-            <Link to="/tickets" className={getMobileNavLinkClass('/tickets')} onClick={closeMobileMenu}>Tickets</Link>
+            {/* <Link to="/tickets" className={getMobileNavLinkClass('/tickets')} onClick={closeMobileMenu}>Tickets</Link> */}
             <Link to="/partnership" className={getMobileNavLinkClass('/partnership')} onClick={closeMobileMenu}>Partnership</Link>
             <Link to="/volunteer" className={getMobileNavLinkClass('/volunteer')} onClick={closeMobileMenu}>Volunteer</Link>
-            <Link to="/programme" className={getMobileNavLinkClass('/programme')} onClick={closeMobileMenu}>Programme</Link>
+            {/* <Link to="/programme" className={getMobileNavLinkClass('/programme')} onClick={closeMobileMenu}>Programme</Link> */}
           </nav>
 
           {/* Mobile Action Buttons */}
           <div className="p-4 border-t border-gray-100 space-y-3">
-            <Link 
+            {/* <Link 
               to="/tickets"
               onClick={closeMobileMenu}
               className="w-full bg-white text-gray-900 border border-gray-300 py-3 px-4 rounded-lg font-normal text-sm hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
             >
               <img src="/assets/Ticket.png" alt="Ticket" className="w-4 h-4" />
               Get Tickets
-            </Link>
+            </Link> */}
             <Link
               to="https://1000t-admin-69g6o09a2-1000t-admin.vercel.app"
               onClick={closeMobileMenu}

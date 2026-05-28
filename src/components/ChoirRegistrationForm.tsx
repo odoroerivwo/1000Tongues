@@ -14,7 +14,7 @@ interface FormData {
   termsAccepted: boolean;
   communicationConsent: boolean;
   privacyPolicyAccepted: boolean;
-  gdprConsent: boolean; // <-- NEW GDPR FIELD
+  gdprConsent: boolean; 
   [key: string]: string | boolean | string[]; 
 }
 
@@ -74,12 +74,46 @@ const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose, title, mes
   );
 };
 
+// --- EXTERNAL COMPONENT: Input Field (MOVED OUTSIDE) ---
+const InputField: React.FC<InputFieldProps> = ({ label, type = "text", value, onChange, placeholder = "" }) => (
+  <div className="flex flex-col">
+    <label className="text-sm font-medium text-gray-700 mb-2">{label}</label>
+    <input
+      type={type}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      className="w-full p-3 md:p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none transition-all"
+    />
+  </div>
+);
+
+// --- EXTERNAL COMPONENT: Select Field (MOVED OUTSIDE) ---
+const SelectField: React.FC<SelectFieldProps> = ({ label, value, onChange, options }) => (
+  <div className="flex flex-col">
+    <label className="text-sm font-medium text-gray-700 mb-2">{label}</label>
+    <div className="relative">
+      <select
+        value={value}
+        onChange={onChange}
+        className="w-full p-3 md:p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none appearance-none cursor-pointer"
+      >
+        {options.map((opt) => (
+          <option key={opt.value} value={opt.value}>{opt.label}</option>
+        ))}
+      </select>
+      <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
+        <ChevronRight className="w-4 h-4 rotate-90" />
+      </div>
+    </div>
+  </div>
+);
+
 // --- MAIN COMPONENT ---
 const ChoirRegistrationForm: React.FC = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Initial State (Cleaned up removed fields)
   const initialFormData: FormData = {
     firstName: '',
     lastName: '',
@@ -92,7 +126,7 @@ const ChoirRegistrationForm: React.FC = () => {
     termsAccepted: false,
     communicationConsent: false,
     privacyPolicyAccepted: false,
-    gdprConsent: false, // <-- NEW
+    gdprConsent: false, 
   };
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
@@ -133,7 +167,7 @@ const ChoirRegistrationForm: React.FC = () => {
       if (result.success) {
         setShowSuccessModal(true);
         setFormData(initialFormData);
-        window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top on success
+        window.scrollTo({ top: 0, behavior: 'smooth' }); 
       } else {
         alert(result.message || "Failed to save registration.");
       }
@@ -144,39 +178,6 @@ const ChoirRegistrationForm: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-
-  const InputField: React.FC<InputFieldProps> = ({ label, type = "text", value, onChange, placeholder = "" }) => (
-    <div className="flex flex-col">
-      <label className="text-sm font-medium text-gray-700 mb-2">{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className="w-full p-3 md:p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none transition-all"
-      />
-    </div>
-  );
-
-  const SelectField: React.FC<SelectFieldProps> = ({ label, value, onChange, options }) => (
-    <div className="flex flex-col">
-      <label className="text-sm font-medium text-gray-700 mb-2">{label}</label>
-      <div className="relative">
-        <select
-          value={value}
-          onChange={onChange}
-          className="w-full p-3 md:p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none appearance-none cursor-pointer"
-        >
-          {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
-          ))}
-        </select>
-        <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
-          <ChevronRight className="w-4 h-4 rotate-90" />
-        </div>
-      </div>
-    </div>
-  );
 
   const renderPersonalInformation = () => (
     <div className="space-y-6">

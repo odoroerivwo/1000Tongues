@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
 const PartnershipFormPage: React.FC = () => {
-  // Add state to track submission status
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [formData, setFormData] = useState({
@@ -28,11 +27,10 @@ const PartnershipFormPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true); // Start loading
+    setIsSubmitting(true); 
 
     try {
-      // FIX: Using VITE_API_BASE_URL to match your .env file
-      const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://1000t-admin.vercel.app/api';
+      const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://1000t-backend.vercel.app/api';
       
       const response = await fetch(`${API_URL}/partnerships`, {
         method: 'POST',
@@ -48,7 +46,6 @@ const PartnershipFormPage: React.FC = () => {
         throw new Error(data.message || 'Something went wrong');
       }
 
-      // Show success toast
       toast.success('Your partnership form has been submitted successfully!', {
         duration: 4000,
         style: {
@@ -64,7 +61,6 @@ const PartnershipFormPage: React.FC = () => {
         },
       });
 
-      // Reset form
       setFormData({
         organizationName: '',
         organizationType: '',
@@ -85,16 +81,14 @@ const PartnershipFormPage: React.FC = () => {
         }
       });
     } finally {
-      setIsSubmitting(false); // Stop loading
+      setIsSubmitting(false); 
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 mt-20">
-      {/* Toast Container */}
       <Toaster position="top-center" reverseOrder={false} />
 
-      {/* Header Section */}
       <div className="bg-white py-12 px-6 sm:px-10">
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-gray-900 mb-4 leading-tight">
@@ -106,7 +100,6 @@ const PartnershipFormPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Form Section */}
       <div className="py-12 px-4 sm:px-8 md:px-12">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-2xl p-6 sm:p-10 shadow-md">
@@ -121,7 +114,6 @@ const PartnershipFormPage: React.FC = () => {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {/* Organization Name */}
                 <div>
                   <label htmlFor="organizationName" className="block text-sm font-medium text-gray-700 mb-2">
                     Organization Name
@@ -133,11 +125,10 @@ const PartnershipFormPage: React.FC = () => {
                     value={formData.organizationName}
                     onChange={handleInputChange}
                     disabled={isSubmitting}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
                   />
                 </div>
 
-                {/* Organization Type */}
                 <div>
                   <label htmlFor="organizationType" className="block text-sm font-medium text-gray-700 mb-2">
                     Organization Type
@@ -148,7 +139,7 @@ const PartnershipFormPage: React.FC = () => {
                     value={formData.organizationType}
                     onChange={handleInputChange}
                     disabled={isSubmitting}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none bg-white disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none bg-white disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
                     <option value="">Select Type</option>
                     <option value="corporation">Corporation</option>
@@ -156,43 +147,43 @@ const PartnershipFormPage: React.FC = () => {
                     <option value="church">Church</option>
                     <option value="nonprofit">Non-profit</option>
                     <option value="business">Local Business</option>
+                    <option value="individual">Individual Supporter</option>
                     <option value="other">Other</option>
                   </select>
                 </div>
 
-                {/* Contact Name */}
                 <div>
                   <label htmlFor="contactName" className="block text-sm font-medium text-gray-700 mb-2">
-                    Contact Name
+                    Contact Name *
                   </label>
                   <input
                     type="text"
                     id="contactName"
                     name="contactName"
+                    required
                     value={formData.contactName}
                     onChange={handleInputChange}
                     disabled={isSubmitting}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
                   />
                 </div>
 
-                {/* Email Address */}
                 <div>
                   <label htmlFor="emailAddress" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
+                    Email Address *
                   </label>
                   <input
                     type="email"
                     id="emailAddress"
                     name="emailAddress"
+                    required
                     value={formData.emailAddress}
                     onChange={handleInputChange}
                     disabled={isSubmitting}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
                   />
                 </div>
 
-                {/* Phone Number */}
                 <div>
                   <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-2">
                     Phone Number
@@ -205,33 +196,31 @@ const PartnershipFormPage: React.FC = () => {
                     onChange={handleInputChange}
                     disabled={isSubmitting}
                     placeholder="+234 801 234 5678"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
                   />
                 </div>
 
-                {/* Partnership Level */}
+                {/* --- EXACT MATCH DROPDOWN --- */}
                 <div>
                   <label htmlFor="partnershipLevel" className="block text-sm font-medium text-gray-700 mb-2">
-                    Partnership Level
+                    Partnership Level / Giving *
                   </label>
                   <select
                     id="partnershipLevel"
                     name="partnershipLevel"
+                    required
                     value={formData.partnershipLevel}
                     onChange={handleInputChange}
                     disabled={isSubmitting}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none bg-white disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none bg-white disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
-                    <option value="">Select Level</option>
-                    <option value="presenting">Presenting Partner ($25,000+)</option>
-                    <option value="principal-15k">Principal Partner ($15,000)</option>
-                    <option value="principal-10k">Principal Partner ($10,000)</option>
-                    <option value="community">Community Partner ($5,000)</option>
-                    <option value="custom">Custom Partnership</option>
+                    <option value="">Select Option</option>
+                    <option value="One-Time Giving">One-Time Giving</option>
+                    <option value="Regular Giving">Regular Giving</option>
+                    <option value="Custom (Brand Placement / Advertising)">Custom (Brand Placement / Advertising)</option>
                   </select>
                 </div>
 
-                {/* Specific Interests */}
                 <div className="sm:col-span-2">
                   <label htmlFor="specificInterests" className="block text-sm font-medium text-gray-700 mb-2">
                     Specific Interests / Requirements
@@ -242,12 +231,12 @@ const PartnershipFormPage: React.FC = () => {
                     value={formData.specificInterests}
                     onChange={handleInputChange}
                     rows={3}
+                    placeholder="Tell us what kind of partnership or brand placement you are interested in..."
                     disabled={isSubmitting}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none resize-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none resize-none disabled:bg-gray-100 disabled:cursor-not-allowed"
                   />
                 </div>
 
-                {/* Message */}
                 <div className="sm:col-span-2">
                   <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
                     Message
@@ -259,12 +248,11 @@ const PartnershipFormPage: React.FC = () => {
                     onChange={handleInputChange}
                     rows={4}
                     disabled={isSubmitting}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none resize-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none resize-none disabled:bg-gray-100 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
 
-              {/* Submit Button */}
               <div className="text-center pt-8">
                 <button
                   type="submit"
