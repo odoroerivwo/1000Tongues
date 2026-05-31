@@ -132,16 +132,17 @@ export default function PartnershipsPage() {
   const handleExport = () => {
     const headers = ["Organization", "Type", "Contact Name", "Email", "Phone", "Level", "Status", "Date"];
     
-    const rows = partnerships.map(p => [
-      getOrgName(p),
-      p.organizationType || "N/A",
-      getContactName(p),
-      getEmail(p),
-      getPhone(p),
-      p.partnershipLevel || "N/A",
-      p.status,
-      new Date(p.createdAt).toLocaleDateString()
-    ]);
+  const rows = partnerships.map(p => [
+    getOrgName(p),
+    p.organizationType || "N/A",
+    getContactName(p),
+    getEmail(p),
+    getPhone(p),
+    p.partnershipLevel || "N/A",
+    p.status,
+    // ✅ Fallback to prevent Invalid Date on export
+    p.createdAt ? new Date(p.createdAt).toLocaleDateString() : "N/A"
+  ]);
 
     const csvContent = "data:text/csv;charset=utf-8," 
       + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
@@ -283,96 +284,104 @@ export default function PartnershipsPage() {
                   </th>
                 </tr>
               </thead>
+              
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredPartnerships.map((p) => (
-                  <tr
-                    key={p._id}
-                    className="hover:bg-gray-50 transition-colors duration-150"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-gray-900">
-                        {getOrgName(p)}
-                      </div>
-                      <div className="text-xs text-gray-500 capitalize">
-                        {p.organizationType || "Unknown Type"}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
-                        {getContactName(p)}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-gray-600">{getEmail(p)}</div>
-                      <div className="text-sm text-gray-500">{getPhone(p)}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                       <span className="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-md">
-                        {p.partnershipLevel === "presenting" ? "Presenting ($25k+)" : 
-                         p.partnershipLevel === "principal-15k" ? "Principal ($15k)" :
-                         p.partnershipLevel === "community" ? "Community ($5k)" :
-                         p.partnershipLevel || "Standard"}
-                       </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                          p.status
-                        )}`}
-                      >
-                        {p.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {new Date(p.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex items-center gap-2">
-                        {actionLoading === p._id ? (
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#B8860B]"></div>
-                        ) : (
-                          <>
-                            {p.status === "Pending" && (
+                {filteredPartnerships.map((p) => {
+                  // ✅ Fallback for legacy data that lacks a status
+                  const currentStatus = p.status || "Pending";
+
+                  return (
+                    <tr
+                      key={p._id}
+                      className="hover:bg-gray-50 transition-colors duration-150"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-medium text-gray-900">
+                          {getOrgName(p)}
+                        </div>
+                        <div className="text-xs text-gray-500 capitalize">
+                          {p.organizationType || "Unknown Type"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">
+                          {getContactName(p)}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-600">{getEmail(p)}</div>
+                        <div className="text-sm text-gray-500">{getPhone(p)}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="px-2 py-1 text-xs font-medium bg-blue-50 text-blue-700 rounded-md">
+                          {p.partnershipLevel === "presenting" ? "Presenting ($25k+)" : 
+                           p.partnershipLevel === "principal-15k" ? "Principal ($15k)" :
+                           p.partnershipLevel === "community" ? "Community ($5k)" :
+                           p.partnershipLevel || "Standard"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
+                            currentStatus // ✅ Using fallback here
+                          )}`}
+                        >
+                          {currentStatus}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {p.createdAt ? new Date(p.createdAt).toLocaleDateString() : "N/A"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex items-center gap-2">
+                          {actionLoading === p._id ? (
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#B8860B]"></div>
+                          ) : (
+                            <>
+                              {/* ✅ Using fallback for conditional rendering */}
+                              {currentStatus === "Pending" && (
+                                <button
+                                  onClick={() => updateStatus(p._id, "Active")}
+                                  className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                  title="Approve"
+                                >
+                                  <Check className="w-4 h-4" />
+                                </button>
+                              )}
+                              {currentStatus === "Active" && (
+                                <button
+                                  onClick={() => updateStatus(p._id, "Inactive")}
+                                  className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                                  title="Deactivate"
+                                >
+                                  <XCircle className="w-4 h-4" />
+                                </button>
+                              )}
+                              {currentStatus === "Inactive" && (
+                                <button
+                                  onClick={() => updateStatus(p._id, "Pending")}
+                                  className="p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                                  title="Set Pending"
+                                >
+                                  <Check className="w-4 h-4" />
+                                </button>
+                              )}
                               <button
-                                onClick={() => updateStatus(p._id, "Active")}
-                                className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                                title="Approve"
+                                onClick={() => deletePartnership(p._id)}
+                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Delete"
                               >
-                                <Check className="w-4 h-4" />
+                                <Trash2 className="w-4 h-4" />
                               </button>
-                            )}
-                            {p.status === "Active" && (
-                              <button
-                                onClick={() => updateStatus(p._id, "Inactive")}
-                                className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                                title="Deactivate"
-                              >
-                                <XCircle className="w-4 h-4" />
-                              </button>
-                            )}
-                            {p.status === "Inactive" && (
-                              <button
-                                onClick={() => updateStatus(p._id, "Pending")}
-                                className="p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
-                                title="Set Pending"
-                              >
-                                <Check className="w-4 h-4" />
-                              </button>
-                            )}
-                            <button
-                              onClick={() => deletePartnership(p._id)}
-                              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                              title="Delete"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
+
             </table>
           </div>
         )}

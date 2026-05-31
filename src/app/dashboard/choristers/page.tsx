@@ -11,47 +11,49 @@ import {
   RotateCcw,
   FileSpreadsheet,
 } from "lucide-react";
-import ChoirmasterForm from "@/components/ChoirmasterForm";
+import ChoristerForm from "@/components/ChoristerForm";
 
-interface Choirmaster {
+interface Chorister {
   _id: string;
-  fullname: string;
+  fullName: string;
   email: string;
-  phone: string;
-  role: string;
+  phoneNumber: string;
+  churchName: string;
   status: "Active" | "Inactive" | "Pending";
-  createdAt: string;
+  createdAt?: string; 
 }
 
-export default function ChoirmasterPage() {
-  const [choirmasters, setChoirmasters] = useState<Choirmaster[]>([]);
+export default function ChoristersPage() {
+  const [choristers, setChoristers] = useState<Chorister[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [editModal, setEditModal] = useState<Choirmaster | null>(null);
+  const [editModal, setEditModal] = useState<Chorister | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  // ✅ Fetch choirmasters
-  const fetchChoirmasters = async () => {
+  // ✅ Fetch choristers
+  const fetchChoristers = async () => {
     try {
-      const res = await fetch("/api/choirmaster");
-      if (!res.ok) throw new Error("Failed to fetch choirmasters");
+      // 🚨 FIX: Changed "/api/choristers" to "/api/chorister"
+      const res = await fetch("/api/chorister"); 
+      if (!res.ok) throw new Error("Failed to fetch choristers");
       const data = await res.json();
-      setChoirmasters(data.choirmasters || []);
+      setChoristers(data.choristers || []);
     } catch (err) {
-      console.error("Error fetching choirmasters:", err);
+      console.error("Error fetching choristers:", err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchChoirmasters();
+    fetchChoristers();
   }, []);
 
-  // ✅ Handle form submission
+// ✅ Handle form submission
   const handleSubmit = async (formData: any, id?: string) => {
-    const url = id ? `/api/choirmaster/${id}` : "/api/choirmaster";
+    // 🚨 FIX: Changed "/api/choristers" to "/api/chorister"
+    const url = id ? `/api/chorister/${id}` : "/api/chorister";
     const method = id ? "PATCH" : "POST";
 
     try {
@@ -65,7 +67,7 @@ export default function ChoirmasterPage() {
       if (!res.ok) throw new Error(data.message || "Something went wrong");
 
       alert(data.message || "Success");
-      await fetchChoirmasters();
+      await fetchChoristers();
       setShowModal(false);
       setEditModal(null);
     } catch (err: any) {
@@ -73,20 +75,22 @@ export default function ChoirmasterPage() {
     }
   };
 
-  // ✅ Update status
+// ✅ Update status
   const updateStatus = async (id: string, status: string) => {
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/choirmaster/${id}/status`, {
+      const res = await fetch(`/api/chorister/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
+      
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.message || "Failed to update status");
       }
-      await fetchChoirmasters();
+      
+      await fetchChoristers();
     } catch (err: any) {
       alert(err.message || "Failed to update status");
     } finally {
@@ -94,28 +98,30 @@ export default function ChoirmasterPage() {
     }
   };
 
-  // ✅ Delete choirmaster
-  const deleteChoirmaster = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this choirmaster?")) return;
+
+  // ✅ Delete chorister
+  const deleteChorister = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this chorister?")) return;
 
     setActionLoading(id);
     try {
-      const res = await fetch(`/api/choirmaster/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/chorister/${id}`, { method: "DELETE" });
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.message || "Failed to delete choirmaster");
+        throw new Error(err.message || "Failed to delete chorister");
       }
-      await fetchChoirmasters();
+      await fetchChoristers();
     } catch (err: any) {
-      alert(err.message || "Failed to delete choirmaster");
+      alert(err.message || "Failed to delete chorister");
     } finally {
       setActionLoading(null);
     }
   };
 
   // ✅ Filter search
-  const filteredChoirmasters = choirmasters.filter((cm) =>
-    [cm.fullname, cm.email, cm.phone, cm.role]
+  const filteredChoristers = choristers.filter((c) =>
+    [c.fullName, c.email, c.phoneNumber, c.churchName]
+      .filter(Boolean)
       .join(" ")
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
@@ -123,10 +129,10 @@ export default function ChoirmasterPage() {
 
   // ✅ Stats
   const stats = {
-    total: choirmasters.length,
-    active: choirmasters.filter((cm) => cm.status === "Active").length,
-    inactive: choirmasters.filter((cm) => cm.status === "Inactive").length,
-    pending: choirmasters.filter((cm) => cm.status === "Pending").length,
+    total: choristers.length,
+    active: choristers.filter((c) => c.status === "Active").length,
+    inactive: choristers.filter((c) => c.status === "Inactive").length,
+    pending: choristers.filter((c) => c.status === "Pending").length,
   };
 
   const getStatusColor = (status: string) => {
@@ -144,18 +150,18 @@ export default function ChoirmasterPage() {
   const exportToExcel = async () => {
     const XLSX = (await import("sheetjs-style")).default;
     const worksheet = XLSX.utils.json_to_sheet(
-      choirmasters.map((cm) => ({
-        Name: cm.fullname ?? "-",
-        Email: cm.email ?? "-",
-        Phone: cm.phone ?? "-",
-        Role: cm.role ?? "-",
-        Status: cm.status,
-        Registered: new Date(cm.createdAt).toLocaleDateString(),
+      choristers.map((c) => ({
+        Name: c.fullName ?? "-",
+        Email: c.email ?? "-",
+        Phone: c.phoneNumber ?? "-",
+        Church: c.churchName ?? "-",
+        Status: c.status,
+        Registered: c.createdAt ? new Date(c.createdAt).toLocaleDateString() : "N/A",
       }))
     );
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Choirmasters");
-    XLSX.writeFile(workbook, "choirmasters.xlsx");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Choristers");
+    XLSX.writeFile(workbook, "choristers.xlsx");
   };
 
   return (
@@ -165,10 +171,10 @@ export default function ChoirmasterPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
             <Users className="w-8 h-8 text-[#B8860B]" />
-            Choirmasters
+            Choristers
           </h1>
           <p className="text-gray-600 mt-2">
-            Manage and oversee all choirmasters in the system
+            Manage and oversee all choristers in the system
           </p>
         </div>
         <div className="flex gap-2">
@@ -177,7 +183,7 @@ export default function ChoirmasterPage() {
             className="flex items-center gap-2 bg-[#B8860B] text-white px-6 py-3 rounded-lg hover:bg-[#9a7109] transition shadow-md hover:shadow-lg"
           >
             <Plus className="w-5 h-5" />
-            Add Choirmaster
+            Add Chorister
           </button>
 
           <button
@@ -195,7 +201,7 @@ export default function ChoirmasterPage() {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="text"
-            placeholder="Search choirmasters..."
+            placeholder="Search choristers..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#B8860B] focus:border-transparent"
@@ -206,7 +212,7 @@ export default function ChoirmasterPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         {[
-          { label: "Total Choirmasters", value: stats.total, color: "text-gray-900" },
+          { label: "Total Choristers", value: stats.total, color: "text-gray-900" },
           { label: "Accepted", value: stats.active, color: "text-green-600" },
           { label: "Pending", value: stats.pending, color: "text-yellow-600" },
           { label: "Rejected", value: stats.inactive, color: "text-gray-400" },
@@ -221,16 +227,16 @@ export default function ChoirmasterPage() {
         ))}
       </div>
 
-      {/* Choirmasters Table */}
+      {/* Choristers Table */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#B8860B]" />
           </div>
-        ) : filteredChoirmasters.length === 0 ? (
+        ) : filteredChoristers.length === 0 ? (
           <div className="text-center py-12">
             <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg">No choirmasters found</p>
+            <p className="text-gray-500 text-lg">No choristers found</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -241,7 +247,7 @@ export default function ChoirmasterPage() {
                     "Full Name",
                     "Email",
                     "Phone",
-                    "Role",
+                    "Church",
                     "Status",
                     "Registered",
                     "Actions",
@@ -256,43 +262,43 @@ export default function ChoirmasterPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredChoirmasters.map((cm) => (
-                  <tr key={cm._id} className="hover:bg-gray-50 transition">
+                {filteredChoristers.map((c) => (
+                  <tr key={c._id} className="hover:bg-gray-50 transition">
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                      {cm.fullname ?? "-"}
+                      {c.fullName ?? "-"}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{cm.email ?? "-"}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{cm.phone ?? "-"}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{cm.role ?? "-"}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{c.email ?? "-"}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{c.phoneNumber ?? "-"}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{c.churchName ?? "-"}</td>
                     <td className="px-6 py-4">
                       <span
                         className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                          cm.status
+                          c.status
                         )}`}
                       >
-                        {cm.status}
+                        {c.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-600">
-                      {new Date(cm.createdAt).toLocaleDateString()}
+                      {c.createdAt ? new Date(c.createdAt).toLocaleDateString() : "N/A"}
                     </td>
                     <td className="px-6 py-4 text-sm font-medium">
                       <div className="flex items-center gap-2">
-                        {actionLoading === cm._id ? (
+                        {actionLoading === c._id ? (
                           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#B8860B]" />
                         ) : (
                           <>
-                            {cm.status === "Pending" && (
+                            {c.status === "Pending" && (
                               <>
                                 <button
-                                  onClick={() => updateStatus(cm._id, "Active")}
+                                  onClick={() => updateStatus(c._id, "Active")}
                                   className="p-2 text-green-600 hover:bg-green-600 hover:text-white rounded-lg border border-green-200 hover:border-green-600"
                                   title="Approve"
                                 >
                                   <Check className="w-4 h-4" />
                                 </button>
                                 <button
-                                  onClick={() => updateStatus(cm._id, "Inactive")}
+                                  onClick={() => updateStatus(c._id, "Inactive")}
                                   className="p-2 text-red-600 hover:bg-red-600 hover:text-white rounded-lg border border-red-200 hover:border-red-600"
                                   title="Reject"
                                 >
@@ -300,9 +306,9 @@ export default function ChoirmasterPage() {
                                 </button>
                               </>
                             )}
-                            {cm.status !== "Pending" && (
+                            {c.status !== "Pending" && (
                               <button
-                                onClick={() => setEditModal(cm)}
+                                onClick={() => setEditModal(c)}
                                 className="p-2 text-yellow-600 hover:bg-yellow-600 hover:text-white rounded-lg border border-yellow-200 hover:border-yellow-600"
                                 title="Edit"
                               >
@@ -310,7 +316,7 @@ export default function ChoirmasterPage() {
                               </button>
                             )}
                             <button
-                              onClick={() => deleteChoirmaster(cm._id)}
+                              onClick={() => deleteChorister(c._id)}
                               className="p-2 text-red-600 hover:bg-red-600 hover:text-white rounded-lg border border-red-200 hover:border-red-600"
                               title="Delete"
                             >
@@ -330,21 +336,22 @@ export default function ChoirmasterPage() {
 
       {/* Add Modal */}
       {showModal && (
-        <Modal title="Add New Choirmaster" onClose={() => setShowModal(false)}>
-          <ChoirmasterForm
-            onSubmit={handleSubmit}
-            submitButtonText="Add Choirmaster"
+        <Modal title="Add New Chorister" onClose={() => setShowModal(false)}>
+          <ChoristerForm
+            // ✅ Explicitly block the event object from becoming the 'id'
+            onSubmit={(data) => handleSubmit(data, undefined)}
+            submitButtonText="Add Chorister"
           />
         </Modal>
       )}
 
       {/* Edit Modal */}
       {editModal && (
-        <Modal title="Edit Choirmaster" onClose={() => setEditModal(null)}>
-          <ChoirmasterForm
+        <Modal title="Edit Chorister" onClose={() => setEditModal(null)}>
+          <ChoristerForm
             initialData={editModal}
             onSubmit={(data) => handleSubmit(data, editModal._id)}
-            submitButtonText="Update Choirmaster"
+            submitButtonText="Update Chorister"
           />
         </Modal>
       )}
@@ -352,7 +359,7 @@ export default function ChoirmasterPage() {
   );
 }
 
-// ✅ Reusable Modal Component
+// Reusable Modal Component
 function Modal({
   title,
   onClose,
@@ -365,7 +372,7 @@ function Modal({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
       <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-fadeIn">
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-xl">
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-xl z-10">
           <h2 className="text-xl font-bold text-gray-900">{title}</h2>
           <button
             onClick={onClose}
