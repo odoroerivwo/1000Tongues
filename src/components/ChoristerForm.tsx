@@ -29,9 +29,9 @@ export interface ChoristerRegistrationFormData {
   photographyConsent: boolean;
 }
 
-interface ChoristerFormProps {
-  // chorister may be partial (editing) and may come from API with slightly different keys
-  chorister?: Partial<ChoristerRegistrationFormData> & Record<string, any>;
+export interface ChoristerFormProps {
+  // ✅ Changed from 'chorister' to 'initialData' to fix the Vercel Type error
+  initialData?: Partial<ChoristerRegistrationFormData> & Record<string, any>;
   onSubmit: (data: ChoristerRegistrationFormData) => Promise<void>;
   submitButtonText?: string;
 }
@@ -39,7 +39,7 @@ interface ChoristerFormProps {
 export default function ChoristerForm({
   onSubmit,
   submitButtonText = "Submit Registration",
-  chorister,
+  initialData, // ✅ Now matches the interface and page.tsx
 }: ChoristerFormProps) {
   const initialState: ChoristerRegistrationFormData = {
     firstName: "",
@@ -72,7 +72,7 @@ export default function ChoristerForm({
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Helper to map incoming partial chorister to full form shape.
+  // Helper to map incoming partial data to full form shape.
   const mapChoristerToForm = (c?: Partial<ChoristerRegistrationFormData> & Record<string, any>) => {
     if (!c) return initialState;
     return {
@@ -103,15 +103,15 @@ export default function ChoristerForm({
     } as ChoristerRegistrationFormData;
   };
 
-  // Prefill form if chorister prop changes (editing)
+  // Prefill form if initialData prop changes (editing)
   useEffect(() => {
-    if (chorister) {
-      setFormData((prev) => ({ ...prev, ...mapChoristerToForm(chorister) }));
+    if (initialData) {
+      setFormData((prev) => ({ ...prev, ...mapChoristerToForm(initialData) }));
     } else {
       setFormData(initialState);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chorister]);
+  }, [initialData]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -130,8 +130,8 @@ export default function ChoristerForm({
     try {
       await onSubmit(formData);
       setSuccess("🎶 Registration successful! We'll be in touch soon.");
-      // Only reset when creating a new record (no chorister prop)
-      if (!chorister) {
+      // Only reset when creating a new record (no initialData prop)
+      if (!initialData) {
         setFormData(initialState);
       }
     } catch (err) {
@@ -152,6 +152,7 @@ export default function ChoristerForm({
       <input
         type={type}
         name={name}
+        required={required}
         value={formData[name] as unknown as string}
         onChange={handleChange}
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#B8860B] focus:border-transparent"
