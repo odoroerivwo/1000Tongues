@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { LayoutDashboard, Users, Settings, BarChart3, LogOut} from "lucide-react";
+import { LayoutDashboard, Users, Settings, BarChart3, LogOut, ShoppingBag } from "lucide-react";
 import type { JWTPayload } from "@/lib/auth";
 import Image from 'next/image';
 
@@ -20,7 +20,8 @@ export default function DashboardSidebar({ admin }: { admin?: JWTPayload }) {
     { href: "/dashboard/choristers", label: "Choristers", icon: Users },
     { href: "/dashboard/choirmasters", label: "Choirmasters", icon: Users },
     { href: "/dashboard/volunteers", label: "Volunteers", icon: Users },
-    { href: "/dashboard/partnerships", label: "Partnerships", icon: BarChart3 },
+    { href: "/dashboard/merchandise", label: "Merchandise", icon: ShoppingBag },
+    { href: "/dashboard/partnerships", label: "Donations", icon: BarChart3 },
     { href: "/dashboard/schedule", label: "Schedule", icon: LayoutDashboard },
     { href: "/dashboard/settings", label: "Settings", icon: Settings },
   ];
