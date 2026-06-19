@@ -7,7 +7,7 @@ const uri = process.env.MONGODB_URI;
 if (!uri) console.error("Warning: MONGODB_URI is not defined in .env");
 
 // VERCEL FIX: Added fallback string to prevent crash
-const client = new MongoClient(uri || "mongodb://localhost:27017");
+const client = new MongoClient(uri || "");
 const db = client.db("1000t-admin");
 
 console.log("✅ Partnership Routes Loaded");

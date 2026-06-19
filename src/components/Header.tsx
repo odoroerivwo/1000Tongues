@@ -52,7 +52,7 @@ const Header: React.FC = () => {
           <Link to="/home" className={getNavLinkClass('/')}>Home</Link>
           <Link to="/join-choir" className={getNavLinkClass('/join-choir')}>Join Choir</Link>
           {/* <Link to="/tickets" className={getNavLinkClass('/tickets')}>Tickets</Link> */}
-          <Link to="/partnership" className={getNavLinkClass('/partnership')}>Partnership</Link>
+          <Link to="/partnership" className={getNavLinkClass('/partnership')}>Donate</Link>
           <Link to="/volunteer" className={getNavLinkClass('/volunteer')}>Volunteer</Link>
           {/* <Link to="/programme" className={getNavLinkClass('/programme')}>Programme</Link> */}
         </nav>
@@ -127,7 +127,7 @@ const Header: React.FC = () => {
             <Link to="/home" className={getMobileNavLinkClass('/home')} onClick={closeMobileMenu}>Home</Link>
             <Link to="/join-choir" className={getMobileNavLinkClass('/join-choir')} onClick={closeMobileMenu}>Join Choir</Link>
             {/* <Link to="/tickets" className={getMobileNavLinkClass('/tickets')} onClick={closeMobileMenu}>Tickets</Link> */}
-            <Link to="/partnership" className={getMobileNavLinkClass('/partnership')} onClick={closeMobileMenu}>Partnership</Link>
+            <Link to="/partnership" className={getMobileNavLinkClass('/partnership')} onClick={closeMobileMenu}>Donate</Link>
             <Link to="/volunteer" className={getMobileNavLinkClass('/volunteer')} onClick={closeMobileMenu}>Volunteer</Link>
             {/* <Link to="/programme" className={getMobileNavLinkClass('/programme')} onClick={closeMobileMenu}>Programme</Link> */}
           </nav>

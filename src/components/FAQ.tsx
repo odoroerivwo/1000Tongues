@@ -61,22 +61,29 @@ const FAQ: React.FC = () => {
 
           {/* Right Side - Contact Card */}
           <div className="lg:w-80">
-            <div className="bg-gray-50 p-6 rounded-lg h-full flex flex-col justify-between">
+            <div className="bg-gray-50 p-6 rounded-3xl h-full flex flex-col justify-between border border-gray-100 shadow-sm">
               <div>
-                {/* Profile Image Placeholder */}
-                <div className="w-16 h-16 bg-black rounded-lg mb-6"></div>
+                {/* Envelope SVG Icon */}
+                <div className="w-12 h-12 bg-[#0E1745]/5 rounded-2xl flex items-center justify-center text-[#0E1745] mb-6">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
                 
                 {/* Card Content */}
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Do you have more questions?</h3>
+                <h3 className="text-xl font-semibold text-[#0E1745] mb-3">Do you have more questions?</h3>
                 <p className="text-gray-600 text-sm leading-relaxed mb-8">
-                  End-to-end payments and financial management in a single solution. Meet the right platform to help realize.
+                  If you have any other questions about volunteering, rehearsals, tickets, or partnerships, our team is here to help.
                 </p>
               </div>
               
-              {/* CTA Button - Positioned at bottom */}
-              <button className="w-full bg-gray-900 text-white py-3 px-6 rounded-lg font-semibold hover:bg-black transition-colors mt-auto">
-                <a href="mailto:info@1000tongues.org">Shoot a Direct Mail</a>
-              </button>
+              {/* CTA Mail Link */}
+              <a 
+                href="mailto:info@1000tongues.org" 
+                className="w-full bg-[#0E1745] text-white py-3.5 px-6 rounded-xl font-semibold hover:bg-[#1a255c] transition-all text-center block shadow-md hover:scale-[1.01]"
+              >
+                Shoot a Direct Mail
+              </a>
             </div>
           </div>
         </div>

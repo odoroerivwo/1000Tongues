@@ -1,5 +1,10 @@
 import dotenv from "dotenv";
+import dns from "dns";
+
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
+
 dotenv.config();
+
 
 import express from "express";
 import cors from "cors";
@@ -12,6 +17,7 @@ import partnershipRoutes from "./routes/partnership";
 import volunteerRoutes from "./routes/volunteer";
 import galleryRoutes from "./routes/gallery";
 import newsletterRoutes from "./routes/newsletter";
+import merchandiseRoutes from "./routes/merchandise";
 
 const app = express();
 
@@ -20,7 +26,7 @@ const uri = process.env.MONGODB_URI;
 if (!uri) console.error("Warning: MONGODB_URI is not defined in .env");
 
 // VERCEL FIX: Provide a properly formatted fallback string so it doesn't crash on boot
-const client = new MongoClient(uri || "mongodb://localhost:27017");
+const client = new MongoClient(uri || "");
 
 // --- MANUAL CORS HEADERS (The "Nuclear" Option) ---
 app.use((req, res, next) => {
@@ -44,6 +50,7 @@ app.use("/api", partnershipRoutes);
 app.use("/api", volunteerRoutes); 
 app.use("/api", galleryRoutes); 
 app.use("/api", newsletterRoutes);
+app.use("/api", merchandiseRoutes);
 
 // --- REAL-TIME STATISTICS ROUTE ---
 app.get("/api/statistics", async (req, res) => {

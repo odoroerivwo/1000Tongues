@@ -336,8 +336,7 @@ const ChoirRegistrationForm: React.FC = () => {
             Raise Your Voice
           </h1>
           <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Be part of 1,000 voices united in worship. No audition required.<br className="hidden md:block" />
-            Just bring your heart for praise and unity.
+            Be part of 1,000 tongues united in worship
           </p>
         </div>
       </div>
@@ -349,7 +348,12 @@ const ChoirRegistrationForm: React.FC = () => {
           {/* Header */}
           <div className="mb-6 text-center md:text-left">
             <h2 className="text-xl md:text-2xl font-bold text-gray-800">Choir Registration</h2>
-            <p className="text-sm text-gray-500 mt-1">Fill in the details below to join</p>
+            <div className="text-sm text-gray-500 mt-2 space-y-1.5 leading-relaxed">
+              <p>Fill in the details below to register to be part of the 1000 tongues choir.</p>
+              <p>There is no commitment at this point to participate in a specific event.</p>
+              <p>We will contact you to commit to be part of each upcoming event.</p>
+              <p>Also please feel free to order your 1000 Tongues T-Shirt (optional)</p>
+            </div>
           </div>
 
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
