@@ -1,0 +1,58 @@
+import { Router } from "express";
+import { google } from "googleapis";
+
+const router = Router();
+
+// VERCEL FIX: Use Environment Variable instead of physical file for Google Auth
+const SCOPES = [""];
+const credentialsEnv = process.env.GOOGLE_CREDENTIALS;
+
+// Parse the JSON securely
+let credentials = {};
+try {
+  credentials = credentialsEnv ? JSON.parse(credentialsEnv) : {};
+} catch (e) {
+  console.error("❌ Failed to parse GOOGLE_CREDENTIALS string", e);
+}
+
+const auth = new google.auth.GoogleAuth({
+  credentials,
+  scopes: SCOPES,
+});
+
+router.get("/gallery", async (req, res) => {
+  try {
+    const drive = google.drive({ version: "v3", auth });
+    
+    const FOLDER_ID = ""; 
+
+    const response = await drive.files.list({
+      q: `'${FOLDER_ID}' in parents and mimeType contains 'image/' and trashed = false`,
+      fields: "files(id, name, thumbnailLink)",
+      orderBy: "createdTime desc", 
+    });
+
+    const images = response.data.files?.map(file => {
+      let finalUrl = file.thumbnailLink ? file.thumbnailLink.replace(/=s\d+/, "=s1080") : "";
+
+      if (!finalUrl) {
+        finalUrl = ``;
+      }
+
+      return {
+        id: file.id,
+        name: file.name,
+        url: finalUrl 
+      };
+      
+    }) || [];
+
+    res.status(200).json(images);
+
+  } catch (error) {
+    console.error("❌ Gallery Fetch Error:", error);
+    res.status(500).json({ error: "Failed to fetch images from Google Drive" });
+  }
+});
+
+export default router;
