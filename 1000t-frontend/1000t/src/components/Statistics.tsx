@@ -85,7 +85,7 @@ const Statistics: React.FC = () => {
               <img src="/assets/fi_music.png" alt="Music" className="w-6 h-6" />
             </div>
             <div className="text-4xl font-bold text-black mb-2">{stats.choirVoices}</div>
-            <div className="text-sm text-gray-500">Choir Registrations</div>
+            <div className="text-sm text-gray-500">Current Choir Registrations</div>
           </div>
 
           {/* Card 2 */}
@@ -93,7 +93,7 @@ const Statistics: React.FC = () => {
             <div className="w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center mx-auto mb-4">
               <img src="/assets/Users-1.png" alt="Users" className="w-6 h-6" />
             </div>
-            <div className="text-4xl font-bold text-black mb-2">{stats.ChoirTarget}+</div>
+            <div className="text-4xl font-bold text-black mb-2">{stats.ChoirTarget}</div>
             <div className="text-sm text-gray-500">Target Choir Registrations</div>
           </div>
         </div>
