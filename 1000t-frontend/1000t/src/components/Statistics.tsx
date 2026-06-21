@@ -4,7 +4,7 @@ const Statistics: React.FC = () => {
   // 1. Setup State to hold the dynamic numbers
   const [stats, setStats] = useState({
     choirVoices: 432,
-    expectedAttendees: 1847,
+    ChoirTarget: 1000,
     registered: 600 // For the choir progress bar
   });
 
@@ -18,7 +18,7 @@ const Statistics: React.FC = () => {
           const data = await response.json();
           setStats({
             choirVoices: data.choirVoices || stats.choirVoices,
-            expectedAttendees: data.expectedAttendees || stats.expectedAttendees,
+            ChoirTarget: data.ChoirTarget || stats.ChoirTarget,
             registered: data.registered || stats.registered
           });
         }
@@ -85,17 +85,17 @@ const Statistics: React.FC = () => {
               <img src="/assets/fi_music.png" alt="Music" className="w-6 h-6" />
             </div>
             <div className="text-4xl font-bold text-black mb-2">{stats.choirVoices}</div>
-            <div className="text-sm text-gray-500">Choir Voices</div>
+            <div className="text-sm text-gray-500">Choir Registrations</div>
           </div>
 
-          {/* Card 2 
+          {/* Card 2 */}
           <div className="bg-gray-100 rounded-lg p-6 text-center shadow-sm">
             <div className="w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center mx-auto mb-4">
               <img src="/assets/Users-1.png" alt="Users" className="w-6 h-6" />
             </div>
-            <div className="text-4xl font-bold text-black mb-2">{stats.expectedAttendees}+</div>
-            <div className="text-sm text-gray-500">Expected Attendees</div>
-          </div>          */}
+            <div className="text-4xl font-bold text-black mb-2">{stats.ChoirTarget}+</div>
+            <div className="text-sm text-gray-500">Target Choir Registrations</div>
+          </div>
         </div>
 
         {/* --- PROGRESS BARS SECTION --- */}
