@@ -12,8 +12,8 @@ const Statistics: React.FC = () => {
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/statistics`); 
-        
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/statistics`);
+
         if (response.ok) {
           const data = await response.json();
           setStats({
@@ -37,11 +37,11 @@ const Statistics: React.FC = () => {
   }, []);
 
   // --- PROGRESS BAR TARGETS ---
-  // const CHOIR_TARGET = 1000;
+  const CHOIR_TARGET = 1000;
   const ATTENDEES_TARGET = 2000; // Change this to your actual attendee goal!
 
   // Calculate the percentages
-  // const choirProgressPercentage = Math.min((stats.registered / CHOIR_TARGET) * 100, 100);
+  const choirProgressPercentage = Math.min((stats.registered / CHOIR_TARGET) * 100, 100);
   const attendeesProgressPercentage = Math.min((stats.expectedAttendees / ATTENDEES_TARGET) * 100, 100);
 
   return (
@@ -100,9 +100,9 @@ const Statistics: React.FC = () => {
 
         {/* --- PROGRESS BARS SECTION --- */}
         <div className="max-w-2xl mx-auto flex flex-col gap-6">
-          
+
           {/* Choir Progress Bar */}
-          {/* <div>
+          <div>
             <div className="flex justify-between items-center mb-3">
               <span className="text-sm font-medium text-gray-700">
                 Choir Registration Progress
@@ -115,10 +115,10 @@ const Statistics: React.FC = () => {
                 style={{ width: `${choirProgressPercentage}%` }}
               ></div>
             </div>
-          </div> */}
+          </div>
 
           {/* Expected Attendees Progress Bar */}
-          <div>
+          {/*<div>
             <div className="flex justify-between items-center mb-3">
               <span className="text-sm font-medium text-gray-700">
                 Expected Attendees Progress
@@ -131,7 +131,7 @@ const Statistics: React.FC = () => {
                 style={{ width: `${attendeesProgressPercentage}%` }}
               ></div>
             </div>
-          </div>
+          </div>*/}
 
         </div>
       </div>
