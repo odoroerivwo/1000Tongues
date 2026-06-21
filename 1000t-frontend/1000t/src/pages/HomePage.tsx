@@ -3,7 +3,7 @@ import Hero from '../components/Hero';
 // import Countdown from '../components/Countdown';
 import Statistics from '../components/Statistics';
 import BePartOfMovement from '../components/BePartOfMovement';
-import Testimonials from '../components/Testimonials';
+// import Testimonials from '../components/Testimonials';
 import Gallery from '../components/Gallery';
 import Newsletter from '../components/Newsletter';
 import FAQ from '../components/FAQ';
