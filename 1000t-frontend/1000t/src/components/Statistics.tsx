@@ -38,11 +38,11 @@ const Statistics: React.FC = () => {
 
   // --- PROGRESS BAR TARGETS ---
   const CHOIR_TARGET = 1000;
-  const ATTENDEES_TARGET = 2000; // Change this to your actual attendee goal!
+  //  const ATTENDEES_TARGET = 2000; // Change this to your actual attendee goal!
 
   // Calculate the percentages
   const choirProgressPercentage = Math.min((stats.registered / CHOIR_TARGET) * 100, 100);
-  const attendeesProgressPercentage = Math.min((stats.expectedAttendees / ATTENDEES_TARGET) * 100, 100);
+  // const attendeesProgressPercentage = Math.min((stats.expectedAttendees / ATTENDEES_TARGET) * 100, 100);
 
   return (
     <section className="py-20 bg-white">
@@ -88,14 +88,14 @@ const Statistics: React.FC = () => {
             <div className="text-sm text-gray-500">Choir Voices</div>
           </div>
 
-          {/* Card 2 */}
+          {/* Card 2 
           <div className="bg-gray-100 rounded-lg p-6 text-center shadow-sm">
             <div className="w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center mx-auto mb-4">
               <img src="/assets/Users-1.png" alt="Users" className="w-6 h-6" />
             </div>
             <div className="text-4xl font-bold text-black mb-2">{stats.expectedAttendees}+</div>
             <div className="text-sm text-gray-500">Expected Attendees</div>
-          </div>
+          </div>          */}
         </div>
 
         {/* --- PROGRESS BARS SECTION --- */}
