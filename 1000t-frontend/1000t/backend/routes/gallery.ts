@@ -4,7 +4,7 @@ import { google } from "googleapis";
 const router = Router();
 
 // VERCEL FIX: Use Environment Variable instead of physical file for Google Auth
-const SCOPES = [""];
+const SCOPES = ["https://www.googleapis.com/auth/drive.readonly"];
 const credentialsEnv = process.env.GOOGLE_CREDENTIALS;
 
 // Parse the JSON securely
@@ -24,7 +24,7 @@ router.get("/gallery", async (req, res) => {
   try {
     const drive = google.drive({ version: "v3", auth });
     
-    const FOLDER_ID = ""; 
+    const FOLDER_ID = "1X2bxv-CA9thWNd7YxG-PQnavPhGAFdlA"; 
 
     const response = await drive.files.list({
       q: `'${FOLDER_ID}' in parents and mimeType contains 'image/' and trashed = false`,
@@ -36,7 +36,7 @@ router.get("/gallery", async (req, res) => {
       let finalUrl = file.thumbnailLink ? file.thumbnailLink.replace(/=s\d+/, "=s1080") : "";
 
       if (!finalUrl) {
-        finalUrl = ``;
+        finalUrl = `https://drive.google.com/thumbnail?id=${file.id}&sz=w1080`;
       }
 
       return {
