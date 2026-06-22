@@ -31,8 +31,8 @@ const Prophesy: React.FC = () => {
 
     return (
         <section
-            className="min-h-screen flex items-center justify-center relative overflow-hidden py-16 md:py-20 lg:py-30 pt-20 md:pt-24"
-            style={{ background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)' }}
+            className="relative overflow-hidden mx-auto rounded-2xl shadow-lg my-12"
+            style={{ width: '851px', height: '315px' }}
         >
             {/* Video */}
             {!videoError && (
@@ -45,7 +45,7 @@ const Prophesy: React.FC = () => {
                         loop
                         playsInline
                     >
-                        <source src="/concert-background.mp4" type="video/mp4" />
+                        <source src="/BePartOfMovement.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
                     <div className="absolute inset-0 bg-black/80"></div>
