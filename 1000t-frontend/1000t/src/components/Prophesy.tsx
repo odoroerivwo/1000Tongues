@@ -31,15 +31,15 @@ const Prophesy: React.FC = () => {
 
     return (
         <section
-            className="relative overflow-hidden mx-auto rounded-2xl shadow-lg my-12"
-            style={{ width: '851px', height: '315px' }}
+            className="w-[851px] max-w-full h-[315px] mx-auto flex items-center justify-center relative overflow-hidden"
+            //style={{ background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)' }}
         >
             {/* Video */}
             {!videoError && (
-                <div className="absolute inset-0 z-0">
+                <div className="absolute inset-0 bg-black/80">
                     <video
                         ref={videoRef}
-                        className="w-full h-full object-cover object-center opacity-0 transition-opacity duration-500"
+                        className="w-full h-full object-cover object-center opacity-1 transition-opacity duration-500"
                         autoPlay
                         muted
                         loop
@@ -48,7 +48,6 @@ const Prophesy: React.FC = () => {
                         <source src="/BePartOfMovement.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
-                    <div className="absolute inset-0 bg-black/80"></div>
                 </div>
             )}
 
