@@ -60,7 +60,7 @@ const Statistics: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Title */}
+        {/* Main Title
         <div className="text-center mb-4">
           <h2
             className="text-4xl font-serif font-bold text-gray-900 mb-4"
@@ -68,14 +68,14 @@ const Statistics: React.FC = () => {
           >
             The Movement Grows
           </h2>
-        </div>
+        </div> */}
 
-        {/* Subtitle */}
+        {/* Subtitle 
         <div className="text-center mb-16">
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             Watch as God builds this historic gathering, one voice at a time
           </p>
-        </div>
+        </div> */}
 
         {/* Statistic Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16 max-w-2xl mx-auto">
