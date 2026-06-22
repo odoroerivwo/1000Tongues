@@ -41,7 +41,7 @@ const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose, title, mes
           <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
             <Check className="h-8 w-8 text-green-600" />
           </div>
-          
+
           <h3 className="text-2xl font-serif font-medium text-gray-900 mb-2">
             {title}
           </h3>
@@ -132,7 +132,7 @@ const MerchandiseOrderForm: React.FC = () => {
     setIsSubmitting(true);
     try {
       const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://1000t-admin.vercel.app/api';
-      
+
       const payload = {
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -189,7 +189,7 @@ const MerchandiseOrderForm: React.FC = () => {
             Order Your Gear
           </h1>
           <p className="text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
-            Get your official 1000 Tongues branded T-Shirt or Polo Shirt to wear proudly at rehearsals and event day.
+            Get your official 1000Tongues branded T-Shirt or Polo Shirt to wear on the event day, and help support the choir.
           </p>
         </div>
       </div>
@@ -197,28 +197,27 @@ const MerchandiseOrderForm: React.FC = () => {
       {/* Main Grid */}
       <div className="px-4 py-8 md:py-12">
         <div className="max-w-4xl mx-auto">
-          
+
           <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
+
             {/* Left Column: Selection Form (8 cols) */}
             <div className="lg:col-span-8 bg-white rounded-2xl shadow-xl border border-gray-100 p-6 md:p-10 space-y-8">
-              
+
               {/* Product Selection */}
               <div>
                 <h3 className="text-lg font-serif text-[#0E1745] mb-4 border-b border-gray-100 pb-2">
                   1. Choose Apparel
                 </h3>
-                
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  
+
                   {/* T-Shirt Option */}
-                  <div 
+                  <div
                     onClick={() => handleInputChange('productType', 'tshirt')}
-                    className={`border rounded-2xl p-5 cursor-pointer transition-all flex flex-col justify-between h-40 ${
-                      formData.productType === 'tshirt' 
-                        ? 'border-[#0E1745] bg-[#0E1745]/5 ring-2 ring-[#0E1745]/20' 
+                    className={`border rounded-2xl p-5 cursor-pointer transition-all flex flex-col justify-between h-40 ${formData.productType === 'tshirt'
+                        ? 'border-[#0E1745] bg-[#0E1745]/5 ring-2 ring-[#0E1745]/20'
                         : 'border-gray-200 hover:border-gray-300 bg-white'
-                    }`}
+                      }`}
                   >
                     <div className="flex justify-between items-start">
                       <span className="text-sm font-semibold tracking-wide text-gray-400 uppercase">T-Shirt</span>
@@ -234,13 +233,12 @@ const MerchandiseOrderForm: React.FC = () => {
                   </div>
 
                   {/* Polo Option */}
-                  <div 
+                  <div
                     onClick={() => handleInputChange('productType', 'polo')}
-                    className={`border rounded-2xl p-5 cursor-pointer transition-all flex flex-col justify-between h-40 ${
-                      formData.productType === 'polo' 
-                        ? 'border-[#0E1745] bg-[#0E1745]/5 ring-2 ring-[#0E1745]/20' 
+                    className={`border rounded-2xl p-5 cursor-pointer transition-all flex flex-col justify-between h-40 ${formData.productType === 'polo'
+                        ? 'border-[#0E1745] bg-[#0E1745]/5 ring-2 ring-[#0E1745]/20'
                         : 'border-gray-200 hover:border-gray-300 bg-white'
-                    }`}
+                      }`}
                   >
                     <div className="flex justify-between items-start">
                       <span className="text-sm font-semibold tracking-wide text-gray-400 uppercase">Polo</span>
@@ -260,7 +258,7 @@ const MerchandiseOrderForm: React.FC = () => {
 
               {/* Sizes and Colors */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
-                
+
                 {/* Sizes Selector */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">Select Size</label>
@@ -270,11 +268,10 @@ const MerchandiseOrderForm: React.FC = () => {
                         key={sz}
                         type="button"
                         onClick={() => handleInputChange('size', sz)}
-                        className={`py-3 border rounded-xl font-medium text-sm transition-all ${
-                          formData.size === sz 
-                            ? 'border-[#0E1745] bg-[#0E1745]/5 text-[#0E1745] font-semibold' 
+                        className={`py-3 border rounded-xl font-medium text-sm transition-all ${formData.size === sz
+                            ? 'border-[#0E1745] bg-[#0E1745]/5 text-[#0E1745] font-semibold'
                             : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
-                        }`}
+                          }`}
                       >
                         {sz}
                       </button>
@@ -291,16 +288,14 @@ const MerchandiseOrderForm: React.FC = () => {
                         key={col}
                         type="button"
                         onClick={() => handleInputChange('color', col)}
-                        className={`w-full flex items-center justify-between p-3.5 border rounded-xl text-left transition-all ${
-                          formData.color === col 
-                            ? 'border-[#0E1745] bg-[#0E1745]/5 text-[#0E1745] font-semibold' 
+                        className={`w-full flex items-center justify-between p-3.5 border rounded-xl text-left transition-all ${formData.color === col
+                            ? 'border-[#0E1745] bg-[#0E1745]/5 text-[#0E1745] font-semibold'
                             : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center space-x-3">
-                          <span className={`w-3.5 h-3.5 rounded-full border border-black/10 ${
-                            col === 'Navy Blue' ? 'bg-[#0E1745]' : col === 'White' ? 'bg-white' : 'bg-[#FFD100]'
-                          }`} />
+                          <span className={`w-3.5 h-3.5 rounded-full border border-black/10 ${col === 'Navy Blue' ? 'bg-[#0E1745]' : col === 'White' ? 'bg-white' : 'bg-[#FFD100]'
+                            }`} />
                           <span>{col}</span>
                         </div>
                         {formData.color === col && <Check className="w-4 h-4 text-[#0E1745]" />}
@@ -418,7 +413,7 @@ const MerchandiseOrderForm: React.FC = () => {
 
             {/* Right Column: Checkout Summary (4 cols) */}
             <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
-              
+
               {/* Receipt card */}
               <div className="bg-[#0E1745] text-white rounded-3xl p-6 shadow-xl space-y-6 relative overflow-hidden">
                 {/* Background graphic */}
@@ -480,10 +475,6 @@ const MerchandiseOrderForm: React.FC = () => {
                     <span>{isSubmitting ? 'Placing Order...' : 'Submit Order'}</span>
                     <span>→</span>
                   </button>
-                </div>
-
-                <div className="text-xxs text-white/50 text-center leading-relaxed">
-                  No payment required today. You will pay at the pickup point upon receiving your shirt.
                 </div>
               </div>
 
