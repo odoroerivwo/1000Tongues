@@ -29,6 +29,7 @@ interface Order {
   pickupPreference: string;
   status: "Pending" | "Completed" | "Cancelled";
   submittedAt: string;
+  donationAmount?: number;
 }
 
 export default function MerchandiseOrdersPage() {
@@ -115,6 +116,7 @@ export default function MerchandiseOrdersPage() {
           Size: order.size,
           Color: order.color,
           Quantity: order.quantity,
+          "Donation (GBP)": order.donationAmount || 0,
           "Total Price (GBP)": order.totalAmount,
           Pickup: order.pickupPreference === 'rehearsal' ? 'Choir Rehearsal' : 'Event Venue',
           Status: order.status,
@@ -295,7 +297,12 @@ export default function MerchandiseOrdersPage() {
                       <div>Qty: <span className="font-semibold">{order.quantity}</span></div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-[#0E1745]">
-                      GBP {order.totalAmount.toFixed(2)}
+                      <div>GBP {order.totalAmount.toFixed(2)}</div>
+                      {order.donationAmount && order.donationAmount > 0 ? (
+                        <div className="text-xs text-green-600 font-medium mt-0.5">
+                          Incl. GBP {order.donationAmount.toFixed(2)} donation
+                        </div>
+                      ) : null}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-600">
                       {order.pickupPreference === 'rehearsal' ? 'Choir Rehearsal' : 'Event Venue'}

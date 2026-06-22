@@ -14,6 +14,7 @@ interface OrderFormData {
   quantity: number;
   pickupPreference: string;
   gdprConsent: boolean;
+  donationAmount: number;
 }
 
 interface SuccessModalProps {
@@ -26,6 +27,7 @@ interface SuccessModalProps {
     size: string;
     color: string;
     quantity: number;
+    donation: number;
     total: number;
   };
 }
@@ -64,6 +66,12 @@ const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose, title, mes
               <span className="text-gray-600">Qty:</span>
               <span className="font-medium text-gray-900">{orderDetails.quantity}</span>
             </div>
+            {orderDetails.donation > 0 && (
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Donation:</span>
+                <span className="font-medium text-gray-900">GBP {orderDetails.donation.toFixed(2)}</span>
+              </div>
+            )}
             <div className="border-t border-gray-200 pt-2 flex justify-between text-sm font-semibold text-[#0E1745]">
               <span>Estimated Total:</span>
               <span>GBP {orderDetails.total.toFixed(2)}</span>
@@ -102,9 +110,11 @@ const MerchandiseOrderForm: React.FC = () => {
     quantity: 1,
     pickupPreference: 'rehearsal',
     gdprConsent: false,
+    donationAmount: 0,
   };
 
   const [formData, setFormData] = useState<OrderFormData>(initialFormData);
+  const [isCustomDonation, setIsCustomDonation] = useState(false);
 
   // Pricing definitions
   const prices = {
@@ -113,7 +123,7 @@ const MerchandiseOrderForm: React.FC = () => {
   };
 
   const getProductPrice = () => prices[formData.productType];
-  const getOrderTotal = () => getProductPrice() * formData.quantity;
+  const getOrderTotal = () => (getProductPrice() * formData.quantity) + formData.donationAmount;
 
   const handleInputChange = (field: keyof OrderFormData, value: any) => {
     setFormData((prev) => ({
@@ -145,6 +155,7 @@ const MerchandiseOrderForm: React.FC = () => {
         color: formData.color,
         quantity: Number(formData.quantity),
         price: getProductPrice(),
+        donationAmount: Number(formData.donationAmount),
         totalAmount: getOrderTotal(),
         pickupPreference: formData.pickupPreference,
         gdprConsent: formData.gdprConsent,
@@ -174,11 +185,12 @@ const MerchandiseOrderForm: React.FC = () => {
   const handleCloseSuccess = () => {
     setShowSuccessModal(false);
     setFormData(initialFormData);
+    setIsCustomDonation(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const sizes = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
-  const colors = ['Navy Blue', 'White', 'Gold'];
+  const colors = ['Navy Blue', 'White'];
 
   return (
     <div className="bg-[#f8f9fc] font-sans pb-16">
@@ -294,7 +306,7 @@ const MerchandiseOrderForm: React.FC = () => {
                           }`}
                       >
                         <div className="flex items-center space-x-3">
-                          <span className={`w-3.5 h-3.5 rounded-full border border-black/10 ${col === 'Navy Blue' ? 'bg-[#0E1745]' : col === 'White' ? 'bg-white' : 'bg-[#FFD100]'
+                          <span className={`w-3.5 h-3.5 rounded-full border border-black/10 ${col === 'Navy Blue' ? 'bg-[#0E1745]' : 'bg-white'
                             }`} />
                           <span>{col}</span>
                         </div>
@@ -363,31 +375,95 @@ const MerchandiseOrderForm: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="flex flex-col">
-                      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Home Church/Fellowship (Optional)</label>
-                      <input
-                        type="text"
-                        value={formData.churchName}
-                        onChange={(e) => handleInputChange('churchName', e.target.value)}
-                        placeholder="E.g., St. Mark's"
-                        className="p-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#0E1745]/20 focus:border-[#0E1745]"
-                      />
-                    </div>
-
-                    <div className="flex flex-col">
-                      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Pickup Preference</label>
+                  <div className="flex flex-col">
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Pickup Preference</label>
+                    <div className="relative">
                       <select
                         value={formData.pickupPreference}
                         onChange={(e) => handleInputChange('pickupPreference', e.target.value)}
-                        className="p-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#0E1745]/20 focus:border-[#0E1745] appearance-none cursor-pointer bg-white"
+                        className="p-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#0E1745]/20 focus:border-[#0E1745] appearance-none cursor-pointer bg-white w-full pr-10"
                       >
                         <option value="rehearsal">Collect at Choir Rehearsal</option>
                         <option value="event">Collect at Main Event Venue</option>
                       </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Support the Choir (Optional Donation) */}
+              <div className="pt-4 border-t border-gray-100">
+                <h3 className="text-lg font-serif text-[#0E1745] mb-4 pb-2 border-b border-gray-100 flex items-center justify-between">
+                  <span>3. Support the Choir (Optional)</span>
+                  <span className="text-xs font-sans font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full uppercase tracking-wider">Donation</span>
+                </h3>
+                <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+                  Support the 1000tongues choir with a freewill donation. Your support helps cover event, music production, and choir welfare costs.
+                </p>
+
+                {/* Predefined donation amount buttons */}
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-4">
+                  {[0, 5, 10, 20].map((amt) => (
+                    <button
+                      key={amt}
+                      type="button"
+                      onClick={() => {
+                        handleInputChange('donationAmount', amt);
+                        setIsCustomDonation(false);
+                      }}
+                      className={`py-3 border rounded-xl font-semibold text-sm transition-all ${
+                        formData.donationAmount === amt && !isCustomDonation
+                          ? 'border-[#0E1745] bg-[#0E1745]/5 text-[#0E1745] font-bold'
+                          : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
+                      }`}
+                    >
+                      {amt === 0 ? 'None' : `£${amt}`}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsCustomDonation(true);
+                      if ([0, 5, 10, 20].includes(formData.donationAmount)) {
+                        handleInputChange('donationAmount', 15);
+                      }
+                    }}
+                    className={`py-3 border rounded-xl font-semibold text-sm transition-all ${
+                      isCustomDonation
+                        ? 'border-[#0E1745] bg-[#0E1745]/5 text-[#0E1745] font-bold'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
+                    }`}
+                  >
+                    Custom
+                  </button>
+                </div>
+
+                {/* Custom Amount input field */}
+                {isCustomDonation && (
+                  <div className="flex flex-col mt-4 max-w-xs transition-opacity duration-200 animate-fadeIn">
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Custom Donation Amount (GBP)</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-semibold">£</span>
+                      <input
+                        type="number"
+                        min="1"
+                        step="any"
+                        value={formData.donationAmount || ''}
+                        onChange={(e) => {
+                          const val = parseFloat(e.target.value);
+                          handleInputChange('donationAmount', isNaN(val) ? 0 : val);
+                        }}
+                        placeholder="15.00"
+                        className="pl-8 pr-4 py-3.5 w-full bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#0E1745]/20 focus:border-[#0E1745] font-semibold text-[#0E1745]"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Terms Checkbox */}
@@ -459,6 +535,12 @@ const MerchandiseOrderForm: React.FC = () => {
                     <span className="text-white/65">Price per unit:</span>
                     <span className="font-semibold">GBP {getProductPrice().toFixed(2)}</span>
                   </div>
+                  {formData.donationAmount > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-white/65">Donation:</span>
+                      <span className="font-semibold text-[#FFD100]">GBP {formData.donationAmount.toFixed(2)}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex justify-between items-center text-lg font-bold">
@@ -495,6 +577,7 @@ const MerchandiseOrderForm: React.FC = () => {
           size: formData.size,
           color: formData.color,
           quantity: formData.quantity,
+          donation: formData.donationAmount,
           total: getOrderTotal(),
         }}
       />
