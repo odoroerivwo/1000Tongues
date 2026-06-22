@@ -14,11 +14,15 @@ const FAQ: React.FC = () => {
     },
     {
       question: "What is the vision behind 1000 Tongues?",
-      answer: "Our vision is to create a historic moment of unified worship in London, bringing together diverse voices to exalt Jesus Christ through the power of collective praise."
+      answer: "1000 tongues is a response in obedience to a simple instruction to 'gather a worship team of 1000 people and hold worship events'.  We are excited to see what God will do as we move in obedience."
     },
     {
       question: "Can I volunteer to help with the event?",
       answer: "Yes! We welcome volunteers in various capacities including event coordination, technical support, hospitality, and more. Volunteer applications will open soon."
+    },
+    {
+      question: "When and where will rehearsals take place?",
+      answer: "There will be 5 hubs across London (north, east, south, west and central).  You will be assigned to the hub most convenient for you, and attend the rehearsals for your hub."
     },
     {
       question: "How can sponsors and partners get involved?",
@@ -69,17 +73,17 @@ const FAQ: React.FC = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                
+
                 {/* Card Content */}
                 <h3 className="text-xl font-semibold text-[#0E1745] mb-3">Do you have more questions?</h3>
                 <p className="text-gray-600 text-sm leading-relaxed mb-8">
                   If you have any other questions about volunteering, rehearsals, tickets, or partnerships, our team is here to help.
                 </p>
               </div>
-              
+
               {/* CTA Mail Link */}
-              <a 
-                href="mailto:info@1000tongues.org" 
+              <a
+                href="mailto:info@1000tongues.org"
                 className="w-full bg-[#0E1745] text-white py-3.5 px-6 rounded-xl font-semibold hover:bg-[#1a255c] transition-all text-center block shadow-md hover:scale-[1.01]"
               >
                 Shoot a Direct Mail

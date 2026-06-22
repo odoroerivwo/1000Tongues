@@ -32,7 +32,6 @@ const Prophesy: React.FC = () => {
     return (
         <section
             className="w-[851px] max-w-full h-[315px] mx-auto flex items-center justify-center relative overflow-hidden"
-            //style={{ background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)' }}
         >
             {/* Video */}
             {!videoError && (
