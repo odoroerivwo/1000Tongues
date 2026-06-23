@@ -159,9 +159,10 @@ const MerchandiseOrderForm: React.FC = () => {
         totalAmount: getOrderTotal(),
         pickupPreference: formData.pickupPreference,
         gdprConsent: formData.gdprConsent,
+        originUrl: window.location.origin,
       };
 
-      const response = await fetch(`${API_URL}/merchandise`, {
+      const response = await fetch(`${API_URL}/payment/create-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -173,7 +174,11 @@ const MerchandiseOrderForm: React.FC = () => {
         throw new Error(data.message || 'Error saving order');
       }
 
-      setShowSuccessModal(true);
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No checkout session URL returned.');
+      }
     } catch (err: any) {
       console.error("Order error:", err);
       alert(`Failed to submit order: ${err.message}`);

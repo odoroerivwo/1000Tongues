@@ -13,6 +13,8 @@ import VolunteerPage from "./pages/VolunteerPage";
 import VolunteerRegistrationPage from "./pages/VolunteerRegistrationPage";
 import ProgrammePage from "./pages/ProgrammePage";
 import PolicyPage from "./pages/PolicyPage";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
+import PaymentCancelPage from "./pages/PaymentCancelPage";
 
 // Admin pages (keep filenames as they are)
 // import Dashboard from "./pages/admin/AdminDashboard";
@@ -61,6 +63,10 @@ function App() {
         
         {/* New Policy Route */}
         <Route path="/policy" element={<Layout><PolicyPage /></Layout>} />
+
+        {/* Payment Confirmation Routes */}
+        <Route path="/payment-success" element={<Layout><PaymentSuccessPage /></Layout>} />
+        <Route path="/payment-cancel" element={<Layout><PaymentCancelPage /></Layout>} />
 
         {/* Optional: fallback - redirect unknown URLs to home (you can change to 404 page) */}
         <Route path="*" element={<Navigate to="/" replace />} />

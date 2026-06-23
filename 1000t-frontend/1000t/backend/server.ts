@@ -18,6 +18,7 @@ import volunteerRoutes from "./routes/volunteer";
 import galleryRoutes from "./routes/gallery";
 import newsletterRoutes from "./routes/newsletter";
 import merchandiseRoutes from "./routes/merchandise";
+import paymentRoutes from "./routes/payment";
 
 const app = express();
 
@@ -42,7 +43,13 @@ app.use((req, res, next) => {
 });
 
 app.use(cors()); 
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+  verify: (req: any, res, buf) => {
+    if (req.originalUrl && req.originalUrl.includes("/payment/webhook")) {
+      req.rawBody = buf;
+    }
+  }
+}));
 
 // Register routes
 app.use("/api", choristerRoutes);
@@ -51,6 +58,7 @@ app.use("/api", volunteerRoutes);
 app.use("/api", galleryRoutes); 
 app.use("/api", newsletterRoutes);
 app.use("/api", merchandiseRoutes);
+app.use("/api", paymentRoutes);
 
 // --- REAL-TIME STATISTICS ROUTE ---
 app.get("/api/statistics", async (req, res) => {

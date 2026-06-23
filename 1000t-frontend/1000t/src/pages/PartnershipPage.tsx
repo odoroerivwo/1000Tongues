@@ -7,6 +7,7 @@ const PartnershipPage: React.FC = () => {
   const [givingType, setGivingType] = useState<'one-time' | 'monthly'>('one-time');
   const [selectedPreset, setSelectedPreset] = useState<number | null>(25); // Default GBP 25 selected
   const [customAmount, setCustomAmount] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Personal details states
   const [personalDetails, setPersonalDetails] = useState({
@@ -36,7 +37,7 @@ const PartnershipPage: React.FC = () => {
     return 'GBP 0';
   };
 
-  const handleNext = (e: React.FormEvent) => {
+  const handleNext = async (e: React.FormEvent) => {
     e.preventDefault();
     if (step === 1) {
       // Validate amount
@@ -51,7 +52,41 @@ const PartnershipPage: React.FC = () => {
         alert('Please fill in your name and email address.');
         return;
       }
-      setStep(3);
+
+      setIsSubmitting(true);
+      try {
+        const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://1000t-admin.vercel.app/api';
+        const finalAmt = selectedPreset || parseFloat(customAmount);
+
+        const response = await fetch(`${API_URL}/payment/create-donation-session`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: personalDetails.name,
+            email: personalDetails.email,
+            phone: personalDetails.phone,
+            amount: finalAmt,
+            givingType: givingType,
+            originUrl: window.location.origin,
+          }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || 'Error processing donation');
+        }
+
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          throw new Error('No checkout session URL returned.');
+        }
+      } catch (err: any) {
+        console.error("Donation error:", err);
+        alert(`Failed to initiate payment: ${err.message}`);
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -133,7 +168,12 @@ const PartnershipPage: React.FC = () => {
                     <span className={`w-2.5 h-2.5 rounded-full ${step >= 3 ? 'bg-[#0E1745]' : 'bg-[#0E1745]/20'}`} />
                   </div>
                   {step > 1 && step < 3 && (
-                    <button onClick={handleBack} className="text-[#0E1745] hover:opacity-75 font-bold text-sm">
+                    <button 
+                      type="button" 
+                      onClick={handleBack} 
+                      disabled={isSubmitting} 
+                      className="text-[#0E1745] hover:opacity-75 font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
                       ←
                     </button>
                   )}
@@ -154,20 +194,22 @@ const PartnershipPage: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setGivingType('one-time')}
+                            disabled={isSubmitting}
                             className={`px-4 py-1.5 rounded-md text-xs font-semibold transition-all ${givingType === 'one-time'
                                 ? 'bg-[#FFD100] text-[#0E1745] shadow-sm'
                                 : 'text-gray-600 hover:text-gray-900'
-                              }`}
+                              } disabled:opacity-50 disabled:cursor-not-allowed`}
                           >
                             One-time
                           </button>
                           <button
                             type="button"
                             onClick={() => setGivingType('monthly')}
+                            disabled={isSubmitting}
                             className={`px-4 py-1.5 rounded-md text-xs font-semibold transition-all ${givingType === 'monthly'
                                 ? 'bg-[#FFD100] text-[#0E1745] shadow-sm'
                                 : 'text-gray-600 hover:text-gray-900'
-                              }`}
+                              } disabled:opacity-50 disabled:cursor-not-allowed`}
                           >
                             Monthly
                           </button>
@@ -181,10 +223,11 @@ const PartnershipPage: React.FC = () => {
                             key={amt}
                             type="button"
                             onClick={() => handlePresetSelect(amt)}
+                            disabled={isSubmitting}
                             className={`py-3.5 px-2 border rounded-xl text-center transition-all ${selectedPreset === amt
                                 ? 'border-[#0E1745] bg-blue-50/30 text-[#0E1745] font-semibold'
                                 : 'border-gray-200 text-gray-700 hover:border-gray-300 bg-white'
-                              }`}
+                              } disabled:opacity-50 disabled:cursor-not-allowed`}
                           >
                             <span className="block text-xxs text-gray-400 font-medium uppercase tracking-wider mb-0.5">GBP</span>
                             <span className="text-lg">{amt}</span>
@@ -199,8 +242,9 @@ const PartnershipPage: React.FC = () => {
                           type="text"
                           value={customAmount}
                           onChange={handleCustomAmountChange}
+                          disabled={isSubmitting}
                           placeholder="Custom Amount"
-                          className="w-full text-base text-gray-800 outline-none bg-transparent"
+                          className="w-full text-base text-gray-800 outline-none bg-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                         />
                       </div>
                     </div>
@@ -223,8 +267,9 @@ const PartnershipPage: React.FC = () => {
                             required
                             value={personalDetails.name}
                             onChange={(e) => setPersonalDetails({ ...personalDetails, name: e.target.value })}
+                            disabled={isSubmitting}
                             placeholder="John Doe"
-                            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-[#0E1745] text-sm"
+                            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-[#0E1745] text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
                           />
                         </div>
 
@@ -235,8 +280,9 @@ const PartnershipPage: React.FC = () => {
                             required
                             value={personalDetails.email}
                             onChange={(e) => setPersonalDetails({ ...personalDetails, email: e.target.value })}
+                            disabled={isSubmitting}
                             placeholder="john@example.com"
-                            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-[#0E1745] text-sm"
+                            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-[#0E1745] text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
                           />
                         </div>
 
@@ -246,8 +292,9 @@ const PartnershipPage: React.FC = () => {
                             type="tel"
                             value={personalDetails.phone}
                             onChange={(e) => setPersonalDetails({ ...personalDetails, phone: e.target.value })}
+                            disabled={isSubmitting}
                             placeholder="+44 7123 456789"
-                            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-[#0E1745] text-sm"
+                            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-[#0E1745] text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
                           />
                         </div>
                       </div>
@@ -293,10 +340,23 @@ const PartnershipPage: React.FC = () => {
                   {step < 3 && (
                     <button
                       type="submit"
-                      className="w-full py-4 bg-[#FFD100] hover:bg-[#ecc200] text-[#0E1745] font-semibold rounded-xl text-sm transition-all duration-300 shadow-md hover:scale-[1.01] flex items-center justify-center space-x-2"
+                      disabled={isSubmitting}
+                      className="w-full py-4 bg-[#FFD100] hover:bg-[#ecc200] text-[#0E1745] font-semibold rounded-xl text-sm transition-all duration-300 shadow-md hover:scale-[1.01] flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-wait"
                     >
-                      <span>{step === 1 ? 'Next' : 'Complete Pledge'}</span>
-                      <span>→</span>
+                      {isSubmitting ? (
+                        <>
+                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-[#0E1745]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          <span>Processing...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>{step === 1 ? 'Next' : 'Complete Donation'}</span>
+                          <span>→</span>
+                        </>
+                      )}
                     </button>
                   )}
                 </form>
