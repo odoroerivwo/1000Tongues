@@ -31,7 +31,7 @@ const Prophesy: React.FC = () => {
 
     return (
         <section
-            className="w-[851px] max-w-full h-[315px] mx-auto flex items-center justify-center relative overflow-hidden"
+            className="w-[320px] max-w-full h-[180px] md:w-[851px] md:h-[315px] mx-auto flex items-center justify-center relative overflow-hidden"
         >
             {/* Video */}
             {!videoError && (
