@@ -45,7 +45,8 @@ const Hero: React.FC = () => {
             loop
             playsInline
           >
-            <source src="/concert-background.mp4" type="video/mp4" />
+            {/*  <source src="/concert-background.mp4" type="video/mp4" /> */}
+            <source src="/1000Tongues.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           <div className="absolute inset-0 bg-black/80"></div>
@@ -94,10 +95,10 @@ const Hero: React.FC = () => {
           "Oh for a thousand tongues to sing my great Redeemer's praise"
         </p>
 
-        {/* Description */}
+        {/* Description 
         <p className="text-sm sm:text-base md:text-lg text-white mb-8 md:mb-12 mx-auto leading-relaxed font-light max-w-3xl px-4">
           Join 1,000 choir voices for an unforgettable gathering of praise & worship in London
-        </p>
+        </p>*/}
 
         {/* Call-to-Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-4 md:gap-6 justify-center items-center px-4">
