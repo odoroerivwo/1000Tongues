@@ -101,7 +101,7 @@ const Footer: React.FC = () => {
                 </Link>
               </li> */}
               <li>
-                <a href="mailto:info@1000tongues.org" className="hover:text-yellow-400 transition-colors">
+                <a href="mailto:info@1000tongues.co.uk" className="hover:text-yellow-400 transition-colors">
                   Email Address
                 </a>
               </li>

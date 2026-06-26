@@ -83,7 +83,7 @@ const FAQ: React.FC = () => {
 
               {/* CTA Mail Link */}
               <a
-                href="mailto:info@1000tongues.org"
+                href="mailto:info@1000tongues.co.uk"
                 className="w-full bg-[#0E1745] text-white py-3.5 px-6 rounded-xl font-semibold hover:bg-[#1a255c] transition-all text-center block shadow-md hover:scale-[1.01]"
               >
                 Shoot a Direct Mail

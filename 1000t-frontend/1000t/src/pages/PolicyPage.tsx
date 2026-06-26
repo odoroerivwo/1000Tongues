@@ -4,7 +4,7 @@ import React from 'react';
 const PolicyPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 mt-20">
-      
+
       {/* Header Section */}
       <div className="bg-white py-12 px-6 sm:px-10">
         <div className="max-w-3xl mx-auto text-center">
@@ -21,7 +21,7 @@ const PolicyPage: React.FC = () => {
       <div className="py-12 px-4 sm:px-8 md:px-12">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-2xl p-6 sm:p-10 shadow-md">
-            
+
             {/* Copyright Section */}
             <div className="mb-12">
               <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-6 border-b border-gray-200 pb-3">
@@ -46,7 +46,7 @@ const PolicyPage: React.FC = () => {
                 Privacy Policy
               </h2>
               <div className="text-gray-600 space-y-8 leading-relaxed">
-                
+
                 <div>
                   <h3 className="text-lg font-medium text-[#0E1745] mb-2">1. Information We Collect</h3>
                   <p>
@@ -77,11 +77,11 @@ const PolicyPage: React.FC = () => {
               </h3>
               <p className="text-gray-600">
                 If you have any questions about these terms or our privacy practices, please contact us at{' '}
-                <a 
-                  href="mailto:info@1000tongues.org" 
+                <a
+                  href="mailto:info@1000tongues.co.uk"
                   className="font-semibold text-[#0E1745] hover:underline"
                 >
-                  info@1000tongues.org
+                  info@1000tongues.co.uk
                 </a>
                 .
               </p>
