@@ -118,7 +118,7 @@ const Footer: React.FC = () => {
               </li>
               <li className="flex items-center">
                 <MailOpen className="w-4 h-4 text-yellow-400 mr-2" />
-                <span><a href="mailto:info@1000tongues.org">info@1000tongues.co.uk</a></span>
+                <span><a href="mailto:info@1000tongues.co.uk">info@1000tongues.co.uk</a></span>
               </li>
               <li className="flex items-center">
                 <MapPin className="w-4 h-4 text-yellow-400 mr-2" />
