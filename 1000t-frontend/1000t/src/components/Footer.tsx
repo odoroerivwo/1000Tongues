@@ -19,15 +19,15 @@ const Footer: React.FC = () => {
           <div className="md:col-span-2">
             <div className="flex items-center mb-4">
               <img
-                src="/assets/1000-tongue.png" 
+                src="/assets/1000-tongue.png"
                 alt="Logo"
                 className="w-20 h-auto object-contain"
               />
             </div>
 
             <p className="text-gray-300 text-sm leading-relaxed mb-6">
-              A music worship gathering — 1,000 voices, 3,000 hearts. One sound
-              of praise in London, Summer 2026.
+              A worship team of 1000 people singing with ONE VOICE
+              The praises of Jesus Christ.
             </p>
 
             <p className="text-xs text-gray-400 mb-4">
@@ -114,11 +114,11 @@ const Footer: React.FC = () => {
             <ul className="space-y-3 text-gray-300 text-sm">
               <li className="flex items-center">
                 <Phone className="w-4 h-4 text-yellow-400 mr-2" />
-                <span><a href="tel:+441234567890">+44 123 456 7890</a></span>
+                <span><a href="tel:+441234567890">+44 798 420 3753</a></span>
               </li>
               <li className="flex items-center">
                 <MailOpen className="w-4 h-4 text-yellow-400 mr-2" />
-                <span><a href="mailto:info@1000tongues.org">info@1000tongues.org</a></span>
+                <span><a href="mailto:info@1000tongues.org">info@1000tongues.co.uk</a></span>
               </li>
               <li className="flex items-center">
                 <MapPin className="w-4 h-4 text-yellow-400 mr-2" />
@@ -128,10 +128,10 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Footer Bottom - Mobile Centered */}
+        {/* Footer Bottom - Mobile Centered 
         <div className="text-center mt-10 border-t border-gray-700 pt-6 text-xs text-gray-400">
           Designed & Built with ❤️ by <a href="https://yptech.rf.gd" className="hover:text-yellow-400 transition-colors">YP Tech 💻</a>
-        </div>
+        </div>*/}
       </div>
     </footer>
   );
