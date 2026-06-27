@@ -23,12 +23,16 @@ router.post("/payment/create-session", async (req, res) => {
       productType,
       size,
       color,
+      gender,
       quantity,
       price,
       donationAmount,
       pickupPreference,
       gdprConsent,
       originUrl,
+      deliveryAddress,
+      deliveryCity,
+      deliveryPostcode,
     } = req.body;
 
     // Connect to database
@@ -47,12 +51,16 @@ router.post("/payment/create-session", async (req, res) => {
       productType,
       size,
       color,
+      gender,
       quantity: Number(quantity),
       price: Number(price),
       donationAmount: Number(donationAmount || 0),
       totalAmount: (Number(price) * Number(quantity)) + Number(donationAmount || 0),
       pickupPreference,
       gdprConsent,
+      deliveryAddress: pickupPreference === "delivery" ? deliveryAddress : undefined,
+      deliveryCity: pickupPreference === "delivery" ? deliveryCity : undefined,
+      deliveryPostcode: pickupPreference === "delivery" ? deliveryPostcode : undefined,
       paymentStatus: "Pending Payment",
       status: "Pending",
       submittedAt: new Date()
@@ -68,7 +76,7 @@ router.post("/payment/create-session", async (req, res) => {
           currency: "gbp",
           product_data: {
             name: productName,
-            description: `Size: ${size} | Color: ${color} | Qty: ${quantity}`,
+            description: `Size: ${size} | Color: ${color} | Fit: ${gender === 'male' ? 'Male' : 'Female'} | Qty: ${quantity}`,
           },
           unit_amount: Math.round(Number(price) * 100), // Stripe unit amount is in pence/cents
         },

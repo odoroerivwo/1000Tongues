@@ -8,11 +8,15 @@ interface OrderFormData {
   email: string;
   phoneNumber: string;
   churchName: string;
-  productType: 'tshirt' | 'polo';
+  productType: 'tshirt' | 'polo' | 'hoodie';
   size: string;
   color: string;
+  gender: 'male' | 'female';
   quantity: number;
   pickupPreference: string;
+  deliveryAddress: string;
+  deliveryCity: string;
+  deliveryPostcode: string;
   gdprConsent: boolean;
   donationAmount: number;
 }
@@ -107,8 +111,12 @@ const MerchandiseOrderForm: React.FC = () => {
     productType: 'tshirt',
     size: 'M',
     color: 'Navy Blue',
+    gender: 'male',
     quantity: 1,
     pickupPreference: 'rehearsal',
+    deliveryAddress: '',
+    deliveryCity: '',
+    deliveryPostcode: '',
     gdprConsent: false,
     donationAmount: 0,
   };
@@ -120,6 +128,7 @@ const MerchandiseOrderForm: React.FC = () => {
   const prices = {
     tshirt: 15.0,
     polo: 20.0,
+    hoodie: 30.0,
   };
 
   const getProductPrice = () => prices[formData.productType];
@@ -139,6 +148,13 @@ const MerchandiseOrderForm: React.FC = () => {
       return;
     }
 
+    if (formData.pickupPreference === 'delivery') {
+      if (!formData.deliveryAddress.trim() || !formData.deliveryCity.trim() || !formData.deliveryPostcode.trim()) {
+        alert("Please fill in all delivery address details.");
+        return;
+      }
+    }
+
     setIsSubmitting(true);
     try {
       const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://1000t-admin.vercel.app/api';
@@ -149,10 +165,15 @@ const MerchandiseOrderForm: React.FC = () => {
         email: formData.email,
         phone: formData.phoneNumber,
         churchName: formData.churchName,
-        productName: formData.productType === 'tshirt' ? '1000 Tongues T-Shirt' : '1000 Tongues Polo Shirt',
+        productName: formData.productType === 'tshirt' 
+          ? '1000 Tongues T-Shirt' 
+          : formData.productType === 'polo' 
+          ? '1000 Tongues Polo Shirt' 
+          : '1000 Tongues Branded Hoodie',
         productType: formData.productType,
         size: formData.size,
         color: formData.color,
+        gender: formData.gender,
         quantity: Number(formData.quantity),
         price: getProductPrice(),
         donationAmount: Number(formData.donationAmount),
@@ -160,6 +181,9 @@ const MerchandiseOrderForm: React.FC = () => {
         pickupPreference: formData.pickupPreference,
         gdprConsent: formData.gdprConsent,
         originUrl: window.location.origin,
+        deliveryAddress: formData.pickupPreference === 'delivery' ? formData.deliveryAddress : undefined,
+        deliveryCity: formData.pickupPreference === 'delivery' ? formData.deliveryCity : undefined,
+        deliveryPostcode: formData.pickupPreference === 'delivery' ? formData.deliveryPostcode : undefined,
       };
 
       const response = await fetch(`${API_URL}/payment/create-session`, {
@@ -226,7 +250,7 @@ const MerchandiseOrderForm: React.FC = () => {
                   1. Choose Apparel
                 </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
                   {/* T-Shirt Option */}
                   <div
@@ -270,6 +294,48 @@ const MerchandiseOrderForm: React.FC = () => {
                     </div>
                   </div>
 
+                  {/* Hoodie Option */}
+                  <div
+                    onClick={() => handleInputChange('productType', 'hoodie')}
+                    className={`border rounded-2xl p-5 cursor-pointer transition-all flex flex-col justify-between h-40 ${formData.productType === 'hoodie'
+                        ? 'border-[#0E1745] bg-[#0E1745]/5 ring-2 ring-[#0E1745]/20'
+                        : 'border-gray-200 hover:border-gray-300 bg-white'
+                      }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <span className="text-sm font-semibold tracking-wide text-gray-400 uppercase">Hoodie</span>
+                      {formData.productType === 'hoodie' && <Check className="w-5 h-5 text-[#0E1745]" />}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-lg">Branded Hoodie</h4>
+                      <p className="text-xs text-gray-500 mt-0.5">Warm & cozy premium fleece</p>
+                    </div>
+                    <div className="text-lg font-extrabold text-[#0E1745] mt-2">
+                      GBP 30.00
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* Gender/Fit Selector */}
+              <div className="pt-4">
+                <label className="block text-sm font-semibold text-gray-700 mb-3">Select Fit</label>
+                <div className="flex gap-4">
+                  {['Male', 'Female'].map((g) => (
+                    <button
+                      key={g}
+                      type="button"
+                      onClick={() => handleInputChange('gender', g.toLowerCase())}
+                      className={`flex-1 py-3.5 border rounded-xl font-medium text-sm transition-all text-center ${
+                        formData.gender === g.toLowerCase()
+                          ? 'border-[#0E1745] bg-[#0E1745] text-white font-semibold shadow-md'
+                          : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
+                      }`}
+                    >
+                      {g}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -381,15 +447,15 @@ const MerchandiseOrderForm: React.FC = () => {
                   </div>
 
                   <div className="flex flex-col">
-                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Pickup Preference</label>
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Pickup/Delivery Preference</label>
                     <div className="relative">
                       <select
                         value={formData.pickupPreference}
                         onChange={(e) => handleInputChange('pickupPreference', e.target.value)}
-                        className="p-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#0E1745]/20 focus:border-[#0E1745] appearance-none cursor-pointer bg-white w-full pr-10"
+                        className="p-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#0E1745]/20 focus:border-[#0E1745] appearance-none cursor-pointer bg-white w-full pr-10 text-gray-900"
                       >
                         <option value="rehearsal">Collect at Choir Rehearsal</option>
-                        <option value="event">Collect at Main Event Venue</option>
+                        <option value="delivery">Deliver to my address</option>
                       </select>
                       <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -398,6 +464,56 @@ const MerchandiseOrderForm: React.FC = () => {
                       </div>
                     </div>
                   </div>
+
+                  {formData.pickupPreference === 'delivery' && (
+                    <div className="space-y-4 border-t border-gray-100 pt-4 animate-fadeIn">
+                      <h4 className="text-sm font-semibold text-[#0E1745] flex items-center gap-1">
+                        <span>Delivery Address Details</span>
+                        <span className="text-xs font-normal text-gray-500">(Required)</span>
+                      </h4>
+                      <div className="flex flex-col">
+                        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                          Address Line 1 <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required={formData.pickupPreference === 'delivery'}
+                          value={formData.deliveryAddress}
+                          onChange={(e) => handleInputChange('deliveryAddress', e.target.value)}
+                          placeholder="123 Main St"
+                          className="p-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#0E1745]/20 focus:border-[#0E1745]"
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex flex-col">
+                          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                            City <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            required={formData.pickupPreference === 'delivery'}
+                            value={formData.deliveryCity}
+                            onChange={(e) => handleInputChange('deliveryCity', e.target.value)}
+                            placeholder="London"
+                            className="p-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#0E1745]/20 focus:border-[#0E1745]"
+                          />
+                        </div>
+                        <div className="flex flex-col">
+                          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                            Postcode <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            required={formData.pickupPreference === 'delivery'}
+                            value={formData.deliveryPostcode}
+                            onChange={(e) => handleInputChange('deliveryPostcode', e.target.value)}
+                            placeholder="SW1A 1AA"
+                            className="p-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#0E1745]/20 focus:border-[#0E1745]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -509,12 +625,18 @@ const MerchandiseOrderForm: React.FC = () => {
                   <div className="flex justify-between">
                     <span className="text-white/65">Product:</span>
                     <span className="font-semibold text-right">
-                      {formData.productType === 'tshirt' ? '1000 Tongues T-Shirt' : '1000 Tongues Polo Shirt'}
+                      {formData.productType === 'tshirt' 
+                        ? '1000 Tongues T-Shirt' 
+                        : formData.productType === 'polo' 
+                        ? '1000 Tongues Polo Shirt' 
+                        : '1000 Tongues Branded Hoodie'}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/65">Options:</span>
-                    <span className="font-semibold">{formData.color} • Size {formData.size}</span>
+                    <span className="font-semibold">
+                      {formData.color} • Size {formData.size} • {formData.gender === 'male' ? 'Male' : 'Female'} Fit
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/65">Quantity:</span>
@@ -576,10 +698,14 @@ const MerchandiseOrderForm: React.FC = () => {
         isOpen={showSuccessModal}
         onClose={handleCloseSuccess}
         title="Order Placed!"
-        message={`Thank you, ${formData.firstName}! Your shirt order has been submitted. We will contact you at ${formData.email} when it is ready.`}
+        message={`Thank you, ${formData.firstName}! Your order has been submitted. We will contact you at ${formData.email} when it is ready.`}
         orderDetails={{
-          item: formData.productType === 'tshirt' ? '1000 Tongues T-Shirt' : '1000 Tongues Polo Shirt',
-          size: formData.size,
+          item: formData.productType === 'tshirt' 
+            ? '1000 Tongues T-Shirt' 
+            : formData.productType === 'polo' 
+            ? '1000 Tongues Polo Shirt' 
+            : '1000 Tongues Branded Hoodie',
+          size: `${formData.size} (${formData.gender === 'male' ? 'Male' : 'Female'} Fit)`,
           color: formData.color,
           quantity: formData.quantity,
           donation: formData.donationAmount,
