@@ -15,8 +15,8 @@ interface FormData {
   termsAccepted: boolean;
   communicationConsent: boolean;
   privacyPolicyAccepted: boolean;
-  gdprConsent: boolean; 
-  [key: string]: string | boolean | string[]; 
+  gdprConsent: boolean;
+  [key: string]: string | boolean | string[];
 }
 
 interface SuccessModalProps {
@@ -32,6 +32,7 @@ interface InputFieldProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   type?: string;
   placeholder?: string;
+  required?: boolean;
 }
 
 interface SelectOption {
@@ -44,6 +45,7 @@ interface SelectFieldProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   options: SelectOption[];
+  required?: boolean;
 }
 
 // --- INTERNAL COMPONENT: Success Modal ---
@@ -76,27 +78,33 @@ const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose, title, mes
 };
 
 // --- EXTERNAL COMPONENT: Input Field (MOVED OUTSIDE) ---
-const InputField: React.FC<InputFieldProps> = ({ label, type = "text", value, onChange, placeholder = "" }) => (
+const InputField: React.FC<InputFieldProps> = ({ label, type = "text", value, onChange, placeholder = "", required = false }) => (
   <div className="flex flex-col">
-    <label className="text-sm font-medium text-gray-700 mb-2">{label}</label>
+    <label className="text-sm font-medium text-gray-700 mb-2">
+      {label} {required && <span className="text-red-500">*</span>}
+    </label>
     <input
       type={type}
       value={value}
       onChange={onChange}
       placeholder={placeholder}
+      required={required}
       className="w-full p-3 md:p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none transition-all"
     />
   </div>
 );
 
 // --- EXTERNAL COMPONENT: Select Field (MOVED OUTSIDE) ---
-const SelectField: React.FC<SelectFieldProps> = ({ label, value, onChange, options }) => (
+const SelectField: React.FC<SelectFieldProps> = ({ label, value, onChange, options, required = false }) => (
   <div className="flex flex-col">
-    <label className="text-sm font-medium text-gray-700 mb-2">{label}</label>
+    <label className="text-sm font-medium text-gray-700 mb-2">
+      {label} {required && <span className="text-red-500">*</span>}
+    </label>
     <div className="relative">
       <select
         value={value}
         onChange={onChange}
+        required={required}
         className="w-full p-3 md:p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none appearance-none cursor-pointer"
       >
         {options.map((opt) => (
@@ -114,7 +122,7 @@ const SelectField: React.FC<SelectFieldProps> = ({ label, value, onChange, optio
 const ChoirRegistrationForm: React.FC = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const initialFormData: FormData = {
     firstName: '',
     lastName: '',
@@ -128,7 +136,7 @@ const ChoirRegistrationForm: React.FC = () => {
     termsAccepted: false,
     communicationConsent: false,
     privacyPolicyAccepted: false,
-    gdprConsent: false, 
+    gdprConsent: false,
   };
 
   const [formData, setFormData] = useState<FormData>(initialFormData);
@@ -141,6 +149,28 @@ const ChoirRegistrationForm: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    // Validate required fields
+    if (!formData.firstName.trim()) {
+      alert("First Name is required.");
+      return;
+    }
+    if (!formData.lastName.trim()) {
+      alert("Last Name is required.");
+      return;
+    }
+    if (!formData.email.trim()) {
+      alert("Email Address is required.");
+      return;
+    }
+    if (!formData.phoneNumber.trim()) {
+      alert("Phone Number is required.");
+      return;
+    }
+    if (!formData.preferredHub) {
+      alert("Preferred Hub is required.");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://1000t-admin.vercel.app/api';
@@ -169,7 +199,7 @@ const ChoirRegistrationForm: React.FC = () => {
       if (result.success) {
         setShowSuccessModal(true);
         setFormData(initialFormData);
-        window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         alert(result.message || "Failed to save registration.");
       }
@@ -184,29 +214,33 @@ const ChoirRegistrationForm: React.FC = () => {
   const renderPersonalInformation = () => (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-        <InputField 
-          label="First Name" 
-          value={formData.firstName} 
-          onChange={(e) => handleInputChange('firstName', e.target.value)} 
+        <InputField
+          label="First Name"
+          value={formData.firstName}
+          onChange={(e) => handleInputChange('firstName', e.target.value)}
+          required={true}
         />
-        <InputField 
-          label="Last Name" 
-          value={formData.lastName} 
-          onChange={(e) => handleInputChange('lastName', e.target.value)} 
+        <InputField
+          label="Last Name"
+          value={formData.lastName}
+          onChange={(e) => handleInputChange('lastName', e.target.value)}
+          required={true}
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-        <InputField 
-          label="Email Address" 
+        <InputField
+          label="Email Address"
           type="email"
-          value={formData.email} 
-          onChange={(e) => handleInputChange('email', e.target.value)} 
+          value={formData.email}
+          onChange={(e) => handleInputChange('email', e.target.value)}
+          required={true}
         />
-        <InputField 
-          label="Phone Number" 
+        <InputField
+          label="Phone Number"
           type="tel"
-          value={formData.phoneNumber} 
-          onChange={(e) => handleInputChange('phoneNumber', e.target.value)} 
+          value={formData.phoneNumber}
+          onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+          required={true}
         />
       </div>
     </div>
@@ -215,12 +249,12 @@ const ChoirRegistrationForm: React.FC = () => {
   const renderChurchMusicalBackground = () => (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-        <InputField 
-          label="Home Church/Fellowship" 
-          value={formData.churchName} 
-          onChange={(e) => handleInputChange('churchName', e.target.value)} 
+        <InputField
+          label="Home Church/Fellowship"
+          value={formData.churchName}
+          onChange={(e) => handleInputChange('churchName', e.target.value)}
         />
-        <SelectField 
+        <SelectField
           label="Choir Experience"
           value={formData.previousChoristerExperience}
           onChange={(e) => handleInputChange('previousChoristerExperience', e.target.value)}
@@ -235,7 +269,7 @@ const ChoirRegistrationForm: React.FC = () => {
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-        <SelectField 
+        <SelectField
           label="Voice Part"
           value={formData.voiceRange}
           onChange={(e) => handleInputChange('voiceRange', e.target.value)}
@@ -248,7 +282,7 @@ const ChoirRegistrationForm: React.FC = () => {
             { value: "unsure", label: "Not sure" },
           ]}
         />
-        <SelectField 
+        <SelectField
           label="Preferred Hub"
           value={formData.preferredHub}
           onChange={(e) => handleInputChange('preferredHub', e.target.value)}
@@ -258,7 +292,9 @@ const ChoirRegistrationForm: React.FC = () => {
             { value: "West London", label: "West London" },
             { value: "South London", label: "South London" },
             { value: "East London", label: "East London" },
+            { value: "Central London", label: "Central London" },
           ]}
+          required={true}
         />
       </div>
       <div className="flex flex-col">
@@ -358,7 +394,7 @@ const ChoirRegistrationForm: React.FC = () => {
       {/* Form Container */}
       <div className="px-4 py-8 md:py-12">
         <div className="max-w-4xl mx-auto">
-          
+
           {/* Header */}
           <div className="mb-6 text-center md:text-left">
             <h2 className="text-xl md:text-2xl font-bold text-gray-800">Choir Registration</h2>
@@ -372,7 +408,7 @@ const ChoirRegistrationForm: React.FC = () => {
 
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
             <div className="p-6 md:p-12 space-y-12">
-              
+
               {/* SECTION 1 */}
               <div>
                 <h3 className="text-lg md:text-xl font-serif text-[#0E1745] mb-6 border-b border-gray-100 pb-2">
