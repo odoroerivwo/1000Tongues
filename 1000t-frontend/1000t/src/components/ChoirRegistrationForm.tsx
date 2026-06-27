@@ -11,6 +11,7 @@ interface FormData {
   previousChoristerExperience: string;
   voiceRange: string;
   musicalExperience: string;
+  preferredHub: string;
   termsAccepted: boolean;
   communicationConsent: boolean;
   privacyPolicyAccepted: boolean;
@@ -123,6 +124,7 @@ const ChoirRegistrationForm: React.FC = () => {
     previousChoristerExperience: '',
     voiceRange: '',
     musicalExperience: '',
+    preferredHub: '',
     termsAccepted: false,
     communicationConsent: false,
     privacyPolicyAccepted: false,
@@ -246,16 +248,28 @@ const ChoirRegistrationForm: React.FC = () => {
             { value: "unsure", label: "Not sure" },
           ]}
         />
-        <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-700 mb-2">Musical Background</label>
-          <textarea
-            value={formData.musicalExperience}
-            onChange={(e) => handleInputChange('musicalExperience', e.target.value)}
-            rows={3}
-            className="w-full p-3 md:p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none resize-none"
-            placeholder="Tell us about your musical background..."
-          />
-        </div>
+        <SelectField 
+          label="Preferred Hub"
+          value={formData.preferredHub}
+          onChange={(e) => handleInputChange('preferredHub', e.target.value)}
+          options={[
+            { value: "", label: "Select preferred hub" },
+            { value: "North London", label: "North London" },
+            { value: "West London", label: "West London" },
+            { value: "South London", label: "South London" },
+            { value: "East London", label: "East London" },
+          ]}
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="text-sm font-medium text-gray-700 mb-2">Musical Background</label>
+        <textarea
+          value={formData.musicalExperience}
+          onChange={(e) => handleInputChange('musicalExperience', e.target.value)}
+          rows={3}
+          className="w-full p-3 md:p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#0E1745] focus:border-transparent outline-none resize-none"
+          placeholder="Tell us about your musical background..."
+        />
       </div>
     </div>
   );
