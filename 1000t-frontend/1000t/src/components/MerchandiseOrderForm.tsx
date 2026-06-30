@@ -165,11 +165,11 @@ const MerchandiseOrderForm: React.FC = () => {
         email: formData.email,
         phone: formData.phoneNumber,
         churchName: formData.churchName,
-        productName: formData.productType === 'tshirt' 
-          ? '1000 Tongues T-Shirt' 
-          : formData.productType === 'polo' 
-          ? '1000 Tongues Polo Shirt' 
-          : '1000 Tongues Branded Hoodie',
+        productName: formData.productType === 'tshirt'
+          ? '1000 Tongues T-Shirt'
+          : formData.productType === 'polo'
+            ? '1000 Tongues Polo Shirt'
+            : '1000 Tongues Branded Hoodie',
         productType: formData.productType,
         size: formData.size,
         color: formData.color,
@@ -230,7 +230,7 @@ const MerchandiseOrderForm: React.FC = () => {
             Order Your Gear
           </h1>
           <p className="text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
-            Get your official 1000Tongues branded T-Shirt or Polo Shirt to wear on the event day, and help support the choir.
+            Get your official 1000Tongues branded T-Shirt, Polo Shirt or Hoodie to wear on the event day, and help support the choir.
           </p>
         </div>
       </div>
@@ -256,19 +256,19 @@ const MerchandiseOrderForm: React.FC = () => {
                   <div
                     onClick={() => handleInputChange('productType', 'tshirt')}
                     className={`border rounded-2xl p-5 cursor-pointer transition-all flex flex-col justify-between h-40 ${formData.productType === 'tshirt'
-                        ? 'border-[#0E1745] bg-[#0E1745]/5 ring-2 ring-[#0E1745]/20'
-                        : 'border-gray-200 hover:border-gray-300 bg-white'
+                      ? 'border-[#0E1745] bg-[#0E1745]/5 ring-2 ring-[#0E1745]/20'
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
                       }`}
                   >
                     <div className="flex justify-between items-start">
-                      <span className="text-sm font-semibold tracking-wide text-gray-400 uppercase">T-Shirt</span>
+                      {/*  <span className="text-sm font-semibold tracking-wide text-gray-400 uppercase">T-Shirt</span>*/}
                       {formData.productType === 'tshirt' && <Check className="w-5 h-5 text-[#0E1745]" />}
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-900 text-lg">Branded Crewneck</h4>
+                      <h4 className="font-bold text-gray-900 text-base">Branded T-Shirt</h4>
                       <p className="text-xs text-gray-500 mt-0.5">Premium soft cotton fit</p>
                     </div>
-                    <div className="text-lg font-extrabold text-[#0E1745] mt-2">
+                    <div className="text-lg font-bold text-[#0E1745] mt-2">
                       GBP 15.00
                     </div>
                   </div>
@@ -277,19 +277,19 @@ const MerchandiseOrderForm: React.FC = () => {
                   <div
                     onClick={() => handleInputChange('productType', 'polo')}
                     className={`border rounded-2xl p-5 cursor-pointer transition-all flex flex-col justify-between h-40 ${formData.productType === 'polo'
-                        ? 'border-[#0E1745] bg-[#0E1745]/5 ring-2 ring-[#0E1745]/20'
-                        : 'border-gray-200 hover:border-gray-300 bg-white'
+                      ? 'border-[#0E1745] bg-[#0E1745]/5 ring-2 ring-[#0E1745]/20'
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
                       }`}
                   >
                     <div className="flex justify-between items-start">
-                      <span className="text-sm font-semibold tracking-wide text-gray-400 uppercase">Polo</span>
+                      {/*  <span className="text-sm font-semibold tracking-wide text-gray-400 uppercase">Polo</span>*/}
                       {formData.productType === 'polo' && <Check className="w-5 h-5 text-[#0E1745]" />}
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-900 text-lg">Branded Polo Shirt</h4>
+                      <h4 className="font-bold text-gray-900 text-base">Branded Polo Shirt</h4>
                       <p className="text-xs text-gray-500 mt-0.5">Classic collar corporate look</p>
                     </div>
-                    <div className="text-lg font-extrabold text-[#0E1745] mt-2">
+                    <div className="text-lg font-bold text-[#0E1745] mt-2">
                       GBP 20.00
                     </div>
                   </div>
@@ -298,19 +298,19 @@ const MerchandiseOrderForm: React.FC = () => {
                   <div
                     onClick={() => handleInputChange('productType', 'hoodie')}
                     className={`border rounded-2xl p-5 cursor-pointer transition-all flex flex-col justify-between h-40 ${formData.productType === 'hoodie'
-                        ? 'border-[#0E1745] bg-[#0E1745]/5 ring-2 ring-[#0E1745]/20'
-                        : 'border-gray-200 hover:border-gray-300 bg-white'
+                      ? 'border-[#0E1745] bg-[#0E1745]/5 ring-2 ring-[#0E1745]/20'
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
                       }`}
                   >
                     <div className="flex justify-between items-start">
-                      <span className="text-sm font-semibold tracking-wide text-gray-400 uppercase">Hoodie</span>
+                      {/*  <span className="text-sm font-semibold tracking-wide text-gray-400 uppercase">Hoodie</span>*/}
                       {formData.productType === 'hoodie' && <Check className="w-5 h-5 text-[#0E1745]" />}
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-900 text-lg">Branded Hoodie</h4>
+                      <h4 className="font-bold text-gray-900 text-base">Branded Hoodie</h4>
                       <p className="text-xs text-gray-500 mt-0.5">Warm & cozy premium fleece</p>
                     </div>
-                    <div className="text-lg font-extrabold text-[#0E1745] mt-2">
+                    <div className="text-lg font-bold text-[#0E1745] mt-2">
                       GBP 30.00
                     </div>
                   </div>
@@ -327,11 +327,10 @@ const MerchandiseOrderForm: React.FC = () => {
                       key={g}
                       type="button"
                       onClick={() => handleInputChange('gender', g.toLowerCase())}
-                      className={`flex-1 py-3.5 border rounded-xl font-medium text-sm transition-all text-center ${
-                        formData.gender === g.toLowerCase()
-                          ? 'border-[#0E1745] bg-[#0E1745] text-white font-semibold shadow-md'
-                          : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
-                      }`}
+                      className={`flex-1 py-3.5 border rounded-xl font-medium text-sm transition-all text-center ${formData.gender === g.toLowerCase()
+                        ? 'border-[#0E1745] bg-[#0E1745] text-white font-semibold shadow-md'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
+                        }`}
                     >
                       {g}
                     </button>
@@ -352,8 +351,8 @@ const MerchandiseOrderForm: React.FC = () => {
                         type="button"
                         onClick={() => handleInputChange('size', sz)}
                         className={`py-3 border rounded-xl font-medium text-sm transition-all ${formData.size === sz
-                            ? 'border-[#0E1745] bg-[#0E1745]/5 text-[#0E1745] font-semibold'
-                            : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
+                          ? 'border-[#0E1745] bg-[#0E1745]/5 text-[#0E1745] font-semibold'
+                          : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
                           }`}
                       >
                         {sz}
@@ -372,8 +371,8 @@ const MerchandiseOrderForm: React.FC = () => {
                         type="button"
                         onClick={() => handleInputChange('color', col)}
                         className={`w-full flex items-center justify-between p-3.5 border rounded-xl text-left transition-all ${formData.color === col
-                            ? 'border-[#0E1745] bg-[#0E1745]/5 text-[#0E1745] font-semibold'
-                            : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
+                          ? 'border-[#0E1745] bg-[#0E1745]/5 text-[#0E1745] font-semibold'
+                          : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
                           }`}
                       >
                         <div className="flex items-center space-x-3">
@@ -537,11 +536,10 @@ const MerchandiseOrderForm: React.FC = () => {
                         handleInputChange('donationAmount', amt);
                         setIsCustomDonation(false);
                       }}
-                      className={`py-3 border rounded-xl font-semibold text-sm transition-all ${
-                        formData.donationAmount === amt && !isCustomDonation
-                          ? 'border-[#0E1745] bg-[#0E1745]/5 text-[#0E1745] font-bold'
-                          : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
-                      }`}
+                      className={`py-3 border rounded-xl font-semibold text-sm transition-all ${formData.donationAmount === amt && !isCustomDonation
+                        ? 'border-[#0E1745] bg-[#0E1745]/5 text-[#0E1745] font-bold'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
+                        }`}
                     >
                       {amt === 0 ? 'None' : `£${amt}`}
                     </button>
@@ -554,11 +552,10 @@ const MerchandiseOrderForm: React.FC = () => {
                         handleInputChange('donationAmount', 15);
                       }
                     }}
-                    className={`py-3 border rounded-xl font-semibold text-sm transition-all ${
-                      isCustomDonation
-                        ? 'border-[#0E1745] bg-[#0E1745]/5 text-[#0E1745] font-bold'
-                        : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
-                    }`}
+                    className={`py-3 border rounded-xl font-semibold text-sm transition-all ${isCustomDonation
+                      ? 'border-[#0E1745] bg-[#0E1745]/5 text-[#0E1745] font-bold'
+                      : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
+                      }`}
                   >
                     Custom
                   </button>
@@ -625,11 +622,11 @@ const MerchandiseOrderForm: React.FC = () => {
                   <div className="flex justify-between">
                     <span className="text-white/65">Product:</span>
                     <span className="font-semibold text-right">
-                      {formData.productType === 'tshirt' 
-                        ? '1000 Tongues T-Shirt' 
-                        : formData.productType === 'polo' 
-                        ? '1000 Tongues Polo Shirt' 
-                        : '1000 Tongues Branded Hoodie'}
+                      {formData.productType === 'tshirt'
+                        ? '1000 Tongues T-Shirt'
+                        : formData.productType === 'polo'
+                          ? '1000 Tongues Polo Shirt'
+                          : '1000 Tongues Branded Hoodie'}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -700,11 +697,11 @@ const MerchandiseOrderForm: React.FC = () => {
         title="Order Placed!"
         message={`Thank you, ${formData.firstName}! Your order has been submitted. We will contact you at ${formData.email} when it is ready.`}
         orderDetails={{
-          item: formData.productType === 'tshirt' 
-            ? '1000 Tongues T-Shirt' 
-            : formData.productType === 'polo' 
-            ? '1000 Tongues Polo Shirt' 
-            : '1000 Tongues Branded Hoodie',
+          item: formData.productType === 'tshirt'
+            ? '1000 Tongues T-Shirt'
+            : formData.productType === 'polo'
+              ? '1000 Tongues Polo Shirt'
+              : '1000 Tongues Branded Hoodie',
           size: `${formData.size} (${formData.gender === 'male' ? 'Male' : 'Female'} Fit)`,
           color: formData.color,
           quantity: formData.quantity,
