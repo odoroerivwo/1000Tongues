@@ -32,38 +32,43 @@ router.post("/chorister", async (req, res) => {
     const firstName = req.body.firstName || "Choir Member";
 
     if (userEmail) {
-      // Connect to your email server using your existing .env variables
-      const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: Number(process.env.EMAIL_PORT),
-        secure: false, 
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
+      try {
+        const emailPort = Number(process.env.EMAIL_PORT);
+        // Connect to your email server using your existing .env variables
+        const transporter = nodemailer.createTransport({
+          host: process.env.EMAIL_HOST,
+          port: emailPort,
+          secure: emailPort === 465, // Use SSL/TLS on port 465, false for others (like 587)
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          },
+        });
 
-      // Construct the email
-      const mailOptions = {
-        from: `"1000 Tongues" <${process.env.EMAIL_USER}>`,
-        to: userEmail,
-        subject: "Registration Successful - Welcome to the Choir!",
-        html: `
-          <div style="font-family: sans-serif; padding: 20px; color: #333;">
-              <h2 style="color: #0A192F;">Welcome to the 1000 Tongues Choir!</h2>
-              <p>Hi ${firstName},</p>
-              <p>Your registration was successful, and your details have been safely received.</p>
-              <p>We are absolutely thrilled to have you join us. We will be in touch soon with further details regarding rehearsals, schedules, and what to expect next.</p>
-              <br/>
-              <p>Best Regards,</p>
-              <p><strong>The 1000 Tongues Team</strong></p>
-          </div>
-        `,
-      };
+        // Construct the email
+        const mailOptions = {
+          from: `"1000 Tongues" <${process.env.EMAIL_USER}>`,
+          to: userEmail,
+          subject: "Registration Successful - Welcome to the Choir!",
+          html: `
+            <div style="font-family: sans-serif; padding: 20px; color: #333;">
+                <h2 style="color: #0A192F;">Welcome to the 1000 Tongues Choir!</h2>
+                <p>Hi ${firstName},</p>
+                <p>Your registration was successful, and your details have been safely received.</p>
+                <p>We are absolutely thrilled to have you join us. We will be in touch soon with further details regarding rehearsals, schedules, and what to expect next.</p>
+                <br/>
+                <p>Best Regards,</p>
+                <p><strong>The 1000 Tongues Team</strong></p>
+            </div>
+          `,
+        };
 
-      // Send the email
-      await transporter.sendMail(mailOptions);
-      console.log(`✅ Confirmation email successfully sent to: ${userEmail}`);
+        // Send the email
+        await transporter.sendMail(mailOptions);
+        console.log(`✅ Confirmation email successfully sent to: ${userEmail}`);
+      } catch (mailErr: any) {
+        console.error("❌ Failed to send confirmation email:", mailErr);
+      }
     } else {
       console.log("⚠️ No email provided in submission, skipping confirmation email.");
     }

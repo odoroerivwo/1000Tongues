@@ -14,6 +14,7 @@ export interface ChoristerRegistrationFormData {
   musicalExperience: string;
   voiceRange: string;
   previousChoristerExperience: string;
+  preferredHub: string;
   availableRehearsalDays: string;
   timeCommitment: string;
   dietaryRequirements: string;
@@ -52,6 +53,7 @@ export default function ChoristerForm({
     musicalExperience: "",
     voiceRange: "",
     previousChoristerExperience: "",
+    preferredHub: "",
     availableRehearsalDays: "",
     timeCommitment: "",
     dietaryRequirements: "",
@@ -87,6 +89,7 @@ export default function ChoristerForm({
       musicalExperience: (c.musicalExperience as string) ?? "",
       voiceRange: (c.voiceRange as string) ?? "",
       previousChoristerExperience: (c.previousChoristerExperience as string) ?? "",
+      preferredHub: (c.preferredHub as string) ?? "",
       availableRehearsalDays: (c.availableRehearsalDays as string) ?? "",
       timeCommitment: (c.timeCommitment as string) ?? "",
       dietaryRequirements: (c.dietaryRequirements as string) ?? "",
@@ -183,6 +186,21 @@ export default function ChoristerForm({
         {textInput("Pastor Name", "pastorName")}
         {textInput("Voice Range", "voiceRange")}
         {textInput("Previous Chorister Experience", "previousChoristerExperience")}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Preferred Hub</label>
+          <select
+            name="preferredHub"
+            value={formData.preferredHub}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#B8860B] focus:border-transparent bg-white text-gray-900"
+          >
+            <option value="">Select preferred hub</option>
+            <option value="North London">North London</option>
+            <option value="West London">West London</option>
+            <option value="South London">South London</option>
+            <option value="East London">East London</option>
+          </select>
+        </div>
         {textInput("Available Rehearsal Days", "availableRehearsalDays")}
         {textInput("Time Commitment", "timeCommitment")}
         {textInput("Emergency Contact Name", "emergencyContactName")}

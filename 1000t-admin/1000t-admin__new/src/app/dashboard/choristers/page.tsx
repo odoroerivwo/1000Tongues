@@ -19,6 +19,7 @@ interface Chorister {
   email: string;
   phoneNumber: string;
   churchName: string;
+  preferredHub?: string;
   status: "Active" | "Inactive" | "Pending";
   createdAt?: string; 
 }
@@ -155,6 +156,7 @@ export default function ChoristersPage() {
         Email: c.email ?? "-",
         Phone: c.phoneNumber ?? "-",
         Church: c.churchName ?? "-",
+        "Preferred Hub": c.preferredHub ?? "-",
         Status: c.status,
         Registered: c.createdAt ? new Date(c.createdAt).toLocaleDateString() : "N/A",
       }))

@@ -20,13 +20,17 @@ interface Order {
   phone: string;
   churchName?: string;
   productName: string;
-  productType: 'tshirt' | 'polo';
+  productType: 'tshirt' | 'polo' | 'hoodie';
   size: string;
   color: string;
+  gender?: 'male' | 'female';
   quantity: number;
   price: number;
   totalAmount: number;
   pickupPreference: string;
+  deliveryAddress?: string;
+  deliveryCity?: string;
+  deliveryPostcode?: string;
   status: "Pending" | "Completed" | "Cancelled";
   submittedAt: string;
   donationAmount?: number;
@@ -115,10 +119,12 @@ export default function MerchandiseOrdersPage() {
           Item: order.productName,
           Size: order.size,
           Color: order.color,
+          Fit: order.gender ? (order.gender === 'male' ? 'Male' : 'Female') : '-',
           Quantity: order.quantity,
           "Donation (GBP)": order.donationAmount || 0,
           "Total Price (GBP)": order.totalAmount,
-          Pickup: order.pickupPreference === 'rehearsal' ? 'Choir Rehearsal' : 'Event Venue',
+          Pickup: order.pickupPreference === 'rehearsal' ? 'Choir Rehearsal' : 'Deliver to Address',
+          "Delivery Address": order.pickupPreference === 'delivery' ? `${order.deliveryAddress || ''}, ${order.deliveryCity || ''}, ${order.deliveryPostcode || ''}` : '-',
           Status: order.status,
           OrderDate: new Date(order.submittedAt).toLocaleDateString(),
         }))
@@ -294,6 +300,9 @@ export default function MerchandiseOrdersPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                       <div>Size: <span className="font-semibold">{order.size}</span></div>
                       <div>Color: <span className="font-semibold">{order.color}</span></div>
+                      {order.gender && (
+                        <div>Fit: <span className="font-semibold capitalize">{order.gender}</span></div>
+                      )}
                       <div>Qty: <span className="font-semibold">{order.quantity}</span></div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-[#0E1745]">
@@ -305,7 +314,17 @@ export default function MerchandiseOrdersPage() {
                       ) : null}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-600">
-                      {order.pickupPreference === 'rehearsal' ? 'Choir Rehearsal' : 'Event Venue'}
+                      {order.pickupPreference === 'rehearsal' ? (
+                        <span className="font-semibold text-blue-600">Choir Rehearsal</span>
+                      ) : (
+                        <div>
+                          <span className="font-semibold text-purple-600">Deliver to Address</span>
+                          <div className="text-[10px] text-gray-500 mt-1 max-w-[180px] break-words">
+                            {order.deliveryAddress || '-'}<br />
+                            {order.deliveryCity || '-'}, {order.deliveryPostcode || '-'}
+                          </div>
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.status)}`}>
