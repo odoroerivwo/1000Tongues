@@ -30,21 +30,22 @@ router.post("/chorister", async (req, res) => {
     // 2. --- MAILING FEATURE START ---
     const userEmail = req.body.email;
     const firstName = req.body.firstName || "Choir Member";
+    const lastName = req.body.lastName || "";
+
+    const emailPort = Number(process.env.EMAIL_PORT);
+    // Connect to your email server using your existing .env variables
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: emailPort,
+      secure: emailPort === 465, // Use SSL/TLS on port 465, false for others (like 587)
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
     if (userEmail) {
       try {
-        const emailPort = Number(process.env.EMAIL_PORT);
-        // Connect to your email server using your existing .env variables
-        const transporter = nodemailer.createTransport({
-          host: process.env.EMAIL_HOST,
-          port: emailPort,
-          secure: emailPort === 465, // Use SSL/TLS on port 465, false for others (like 587)
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-          },
-        });
-
         // Construct the email
         const mailOptions = {
           from: `"1000 Tongues" <${process.env.EMAIL_USER}>`,
@@ -71,6 +72,72 @@ router.post("/chorister", async (req, res) => {
       }
     } else {
       console.log("⚠️ No email provided in submission, skipping confirmation email.");
+    }
+
+    // Send email to admin
+    const adminEmail = process.env.RECEIVER_EMAIL || process.env.ADMIN_EMAIL;
+    if (adminEmail) {
+      try {
+        const adminMailOptions = {
+          from: `"1000 Tongues Website" <${process.env.EMAIL_USER}>`,
+          to: adminEmail,
+          subject: `🎉 New Chorister Registration: ${firstName} ${lastName}`,
+          html: `
+            <div style="font-family: sans-serif; padding: 20px; color: #333;">
+                <h2 style="color: #0A192F; border-bottom: 2px solid #eee; padding-bottom: 10px;">New Chorister Registration</h2>
+                <p>A new registration has been submitted from the 1000 Tongues website:</p>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; width: 180px; border-bottom: 1px solid #eee;">First Name:</td>
+                        <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${firstName}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; border-bottom: 1px solid #eee;">Last Name:</td>
+                        <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${lastName}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; border-bottom: 1px solid #eee;">Email:</td>
+                        <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${userEmail || "Not provided"}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; border-bottom: 1px solid #eee;">Phone Number:</td>
+                        <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${req.body.phoneNumber || "Not provided"}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; border-bottom: 1px solid #eee;">Church Name:</td>
+                        <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${req.body.churchName || "Not provided"}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; border-bottom: 1px solid #eee;">Choir Experience:</td>
+                        <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${req.body.previousChoristerExperience || "Not provided"}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; border-bottom: 1px solid #eee;">Voice Part:</td>
+                        <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${req.body.voiceRange || "Not provided"}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; border-bottom: 1px solid #eee;">Preferred Hub:</td>
+                        <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${req.body.preferredHub || "Not provided"}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold; border-bottom: 1px solid #eee;">Musical Background:</td>
+                        <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${req.body.musicalExperience || "Not provided"}</td>
+                    </tr>
+                </table>
+                <br/>
+                <p style="font-size: 12px; color: #666;">This is an automated notification from the 1000 Tongues website backend.</p>
+            </div>
+          `,
+        };
+
+        await transporter.sendMail(adminMailOptions);
+        console.log(`✅ Admin notification email successfully sent to: ${adminEmail}`);
+      } catch (adminMailErr: any) {
+        console.error("❌ Failed to send admin notification email:", adminMailErr);
+      }
+    } else {
+      console.log("⚠️ No admin email defined, skipping admin notification email.");
     }
     // --- MAILING FEATURE END ---
 
